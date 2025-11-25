@@ -59,7 +59,7 @@ class _FloatingBottomNavigationWidgetState
             left: 16,
             right: 16,
             bottom: 16,
-            child: Obx(() => _buildNavigationBar()),
+            child: _buildNavigationBar(),
           ),
         ],
       ),

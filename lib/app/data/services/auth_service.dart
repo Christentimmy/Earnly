@@ -103,12 +103,10 @@ class AuthService {
     return null;
   }
 
-  Future<http.Response?> validateToken({
-    required String token,
-  }) async {
+  Future<http.Response?> validateToken({required String token}) async {
     try {
       final response = await http
-          .get(
+          .post(
             Uri.parse('$baseUrl/auth/validate-token'),
             headers: {
               "Content-Type": "application/json",
@@ -126,5 +124,4 @@ class AuthService {
     }
     return null;
   }
-
 }
