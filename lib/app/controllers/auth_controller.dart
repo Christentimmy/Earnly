@@ -2,18 +2,21 @@ import 'dart:convert';
 
 import 'package:earnly/app/controllers/storage_controller.dart';
 import 'package:earnly/app/data/services/auth_service.dart';
+import 'package:earnly/app/routes/app_routes.dart';
 import 'package:earnly/app/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   final AuthService authService = AuthService();
+  final isloading = false.obs;
 
   Future<void> register({
     required String name,
     required String email,
     required String password,
   }) async {
+    isloading.value = true;
     try {
       final response = await authService.register(
         name: name,
@@ -30,8 +33,11 @@ class AuthController extends GetxController {
       final token = decoded["token"];
       final storageController = Get.find<StorageController>();
       await storageController.storeToken(token);
+      Get.toNamed(AppRoutes.otpScreen, arguments: {"email": email});
     } catch (e) {
       debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
     }
   }
 }

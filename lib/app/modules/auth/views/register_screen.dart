@@ -1,9 +1,19 @@
+import 'package:earnly/app/controllers/auth_controller.dart';
 import 'package:earnly/app/routes/app_routes.dart';
+import 'package:earnly/app/widgets/custom_button.dart';
+import 'package:earnly/app/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+  RegisterScreen({super.key});
+
+  final formKey = GlobalKey<FormState>();
+  final authController = Get.find<AuthController>();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,26 +43,59 @@ class RegisterScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 30),
+                Form(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Username or Email
+                      CustomTextField(
+                        hintText: "Username",
+                        bgColor: const Color(0xFFF6F6F6),
+                        controller: nameController,
+                      ),
+                      const SizedBox(height: 10),
 
-                // Username or Email
-                _buildTextField(
-                  hintText: "Username or Email",
-                  obscureText: false,
+                      // Password
+                      CustomTextField(
+                        hintText: "Email",
+                        bgColor: const Color(0xFFF6F6F6),
+                        controller: emailController,
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Confirm Password
+                      CustomTextField(
+                        hintText: "Password",
+                        isObscure: true,
+                        bgColor: const Color(0xFFF6F6F6),
+                        controller: passwordController,
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 10),
-
-                // Password
-                _buildTextField(hintText: "Password", obscureText: true),
-                const SizedBox(height: 10),
-
-                // Confirm Password
-                _buildTextField(
-                  hintText: "Confirm Password",
-                  obscureText: true,
-                ),
-                const SizedBox(height: 20),
 
                 // Register Button → Navigates to LoginScreen
+                CustomButton(
+                  ontap: () async {
+                    if (authController.isloading.value) return;
+                    if (!formKey.currentState!.validate()) return;
+                    await authController.register(
+                      name: nameController.text,
+                      email: emailController.text,
+                      password: passwordController.text,
+                    );
+                  },
+                  isLoading: authController.isloading,
+                  child: Text(
+                    "Register",
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -65,7 +108,7 @@ class RegisterScreen extends StatelessWidget {
                       elevation: 0,
                     ),
                     onPressed: () {
-                     Get.toNamed(AppRoutes.loginScreen);
+                      Get.toNamed(AppRoutes.loginScreen);
                     },
                     child: const Text(
                       "Register",
@@ -129,27 +172,27 @@ class RegisterScreen extends StatelessWidget {
   }
 
   // Custom Text Field Widget
-  Widget _buildTextField({
-    required String hintText,
-    required bool obscureText,
-  }) {
-    return TextField(
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        hintText: hintText,
-        filled: true,
-        fillColor: const Color(0xFFF6F6F6),
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 16,
-          horizontal: 16,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-  }
+  // Widget _buildTextField({
+  //   required String hintText,
+  //   required bool obscureText,
+  // }) {
+  //   return TextField(
+  //     obscureText: obscureText,
+  //     decoration: InputDecoration(
+  //       hintText: hintText,
+  //       filled: true,
+  //       fillColor: const Color(0xFFF6F6F6),
+  //       contentPadding: const EdgeInsets.symmetric(
+  //         vertical: 16,
+  //         horizontal: 16,
+  //       ),
+  //       border: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(10),
+  //         borderSide: BorderSide.none,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   // Social Button Widget
   Widget _socialButton({
@@ -172,7 +215,7 @@ class RegisterScreen extends StatelessWidget {
         ),
         icon: Icon(icon, color: textColor, size: 26),
         onPressed: () {
-         Get.toNamed(AppRoutes.loginScreen);
+          Get.toNamed(AppRoutes.loginScreen);
         },
         label: Text(
           text,

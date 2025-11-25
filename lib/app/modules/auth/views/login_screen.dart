@@ -1,9 +1,6 @@
 import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'register_screen.dart';
-import 'forget_password_screen.dart';
-// import 'home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -50,12 +47,7 @@ class LoginScreen extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const ForgetPasswordScreen(),
-                      ),
-                    );
+                    Get.toNamed(AppRoutes.forgetPasswordScreen);
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
@@ -84,12 +76,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   onPressed: () {
                     Get.toNamed(AppRoutes.homeScreen);
-                    // ✅ Navigate to HomeScreen after login
-                    // Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(builder: (_) => const HomeScreen()),
-                    // );
-                  },
+                    },
                   child: const Text(
                     "Login",
                     style: TextStyle(
@@ -112,12 +99,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const RegisterScreen(),
-                        ),
-                      );
+                     Get.toNamed(AppRoutes.registerScreen);
                     },
                     child: const Text(
                       "Register account",

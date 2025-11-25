@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart';
-import 'forget_password_code_screen.dart';
 
 class ForgetPasswordScreen extends StatelessWidget {
   const ForgetPasswordScreen({super.key});
@@ -82,16 +80,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                       ),
                       elevation: 0,
                     ),
-                    onPressed: () {
-                      // Navigate back to login after clicking Continue
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => const ForgetPasswordCodeScreen(),
-                        ),
-                      );
-                    },
+                    onPressed: () {},
                     child: const Text(
                       "Continue",
                       style: TextStyle(
@@ -106,14 +95,7 @@ class ForgetPasswordScreen extends StatelessWidget {
 
                 /// Back to Login
                 GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    );
-                  },
+                  onTap: () {},
                   child: const Text(
                     "Back to Login",
                     style: TextStyle(
