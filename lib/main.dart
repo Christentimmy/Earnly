@@ -20,7 +20,7 @@ class EarnlyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       getPages: AppPages.pages,
       initialBinding: AppBindings(),
-      initialRoute: AppRoutes.onboardingScreen1,
+      initialRoute: AppRoutes.splashScreen,
     );
   }
 }

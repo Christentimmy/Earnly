@@ -6,6 +6,7 @@ import 'package:earnly/app/modules/home/views/home_screen.dart';
 import 'package:earnly/app/modules/onboarding/views/onboarding_screen_1.dart';
 import 'package:earnly/app/modules/onboarding/views/onboarding_screen_2.dart';
 import 'package:earnly/app/modules/onboarding/views/welcome_screen.dart';
+import 'package:earnly/app/modules/splash/views/splash_screen.dart';
 import 'package:earnly/app/routes/app_routes.dart';
 import 'package:earnly/app/widgets/bottom_navigation_widget.dart';
 import 'package:flutter/material.dart';
@@ -48,5 +49,6 @@ class AppPages {
       name: AppRoutes.bottomNavigationScreen,
       page: () => const FloatingBottomNavigationWidget(),
     ),
+    GetPage(name: AppRoutes.splashScreen, page: () => SplashScreen()),
   ];
 }

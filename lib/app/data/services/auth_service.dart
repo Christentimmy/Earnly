@@ -7,7 +7,6 @@ import "package:flutter/material.dart";
 import "package:http/http.dart" as http;
 
 class AuthService {
-
   Future<http.Response?> register({
     required String name,
     required String email,
@@ -91,6 +90,30 @@ class AuthService {
             Uri.parse('$baseUrl/auth/send-otp'),
             headers: {"Content-Type": "application/json"},
             body: jsonEncode({"email": email}),
+          )
+          .timeout(const Duration(seconds: 30));
+      return response;
+    } on SocketException {
+      CustomSnackbar.showErrorToast("No internet connection");
+    } on TimeoutException {
+      CustomSnackbar.showErrorToast("Request timeout, please try again");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<http.Response?> validateToken({
+    required String token,
+  }) async {
+    try {
+      final response = await http
+          .get(
+            Uri.parse('$baseUrl/auth/validate-token'),
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer $token",
+            },
           )
           .timeout(const Duration(seconds: 30));
       return response;

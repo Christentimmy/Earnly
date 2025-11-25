@@ -13,4 +13,5 @@ class AppRoutes {
   static const String walletScreen = "/wallet-screen";
   static const String settingsScreen = "/settings-screen";
   static const String bottomNavigationScreen = "/bottom-navigation-screen";
+  static const String splashScreen = "/splash-screen";
 }

@@ -124,4 +124,31 @@ class AuthController extends GetxController {
       isOtpVerifyLoading.value = false;
     }
   }
+
+  Future<void> validateToken({required String token}) async {
+    try {
+      final response = await authService.validateToken(token: token);
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      String message = decoded["message"];
+      String email = decoded["email"];
+      if (response.statusCode == 405) {
+        Get.offAllNamed(
+          AppRoutes.otpScreen,
+          arguments: {
+            "email": email,
+            "whatNext": () => Get.offAllNamed(AppRoutes.bottomNavigationScreen),
+          },
+        );
+        return;
+      }
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      Get.offAllNamed(AppRoutes.bottomNavigationScreen);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 }
