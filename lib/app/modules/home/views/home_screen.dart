@@ -1,12 +1,16 @@
+import 'package:earnly/app/controllers/user_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+
+  final userController = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF60D07E),
+      backgroundColor: const Color.fromARGB(255, 26, 71, 38),
       body: SafeArea(
         child: Stack(
           alignment: Alignment.bottomCenter,
@@ -124,7 +128,7 @@ class HomeScreen extends StatelessWidget {
                         Text(
                           "Earning History",
                           style: TextStyle(
-                            color: Colors.black87,
+                            color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -166,14 +170,45 @@ class HomeScreen extends StatelessWidget {
                   horizontal: 20,
                   vertical: 16,
                 ),
-                color: const Color(0xFF60D07E),
+                // color: const Color(0xFF60D07E),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Profile Row
-                    const CircleAvatar(
-                      radius: 25,
-                      backgroundImage: AssetImage('assets/images/profile.png'),
+                    Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 25,
+                          backgroundImage: AssetImage(
+                            'assets/images/profile.png',
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Obx(
+                              () => Text(
+                                "${userController.userModel.value?.name}",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Obx(
+                              () => Text(
+                                "${userController.userModel.value?.email}",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
 
@@ -194,7 +229,7 @@ class HomeScreen extends StatelessWidget {
                           // Left Text
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Text(
                                 "Total Earnings",
                                 style: TextStyle(
@@ -203,12 +238,14 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: 5),
-                              Text(
-                                "234,000 sats",
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
+                              Obx(
+                                () => Text(
+                                  "${userController.userModel.value?.credits}",
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
                                 ),
                               ),
                               Text(
@@ -231,7 +268,6 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-
           ],
         ),
       ),

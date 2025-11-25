@@ -41,7 +41,7 @@ class AppPages {
         return OtpScreen(email: email, whatNext: whatNext);
       },
     ),
-    GetPage(name: AppRoutes.homeScreen, page: () => const HomeScreen()),
+    GetPage(name: AppRoutes.homeScreen, page: () => HomeScreen()),
     // GetPage(name: AppRoutes.gameScreen, page: () => const GameScreen()),
     // GetPage(name: AppRoutes.walletScreen, page: () => const WalletScreen()),
     // GetPage(name: AppRoutes.settingsScreen, page: () => const SettingsScreen()),

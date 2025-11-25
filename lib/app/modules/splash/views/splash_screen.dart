@@ -1,5 +1,6 @@
 import 'package:earnly/app/controllers/auth_controller.dart';
 import 'package:earnly/app/controllers/storage_controller.dart';
+import 'package:earnly/app/controllers/user_controller.dart';
 import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,6 +25,8 @@ class _SplashScreenState extends State<SplashScreen> {
       }
       final authController = Get.find<AuthController>();
       await authController.validateToken(token: token);
+      final userController = Get.find<UserController>();
+      await userController.getUserDetails();
     });
   }
 

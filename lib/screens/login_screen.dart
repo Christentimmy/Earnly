@@ -119,7 +119,7 @@ class LoginScreen extends StatelessWidget {
                     // ✅ Navigate to HomeScreen after login
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (_) => const HomeScreen()),
+                      MaterialPageRoute(builder: (_) => HomeScreen()),
                     );
                   },
                   child: const Text(

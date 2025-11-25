@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:earnly/app/controllers/storage_controller.dart';
+import 'package:earnly/app/controllers/user_controller.dart';
 import 'package:earnly/app/data/services/auth_service.dart';
 import 'package:earnly/app/routes/app_routes.dart';
 import 'package:earnly/app/widgets/snack_bar.dart';
@@ -34,6 +35,8 @@ class AuthController extends GetxController {
       final token = decoded["token"];
       final storageController = Get.find<StorageController>();
       await storageController.storeToken(token);
+      final userController = Get.find<UserController>();
+      await userController.getUserDetails();
       Get.toNamed(AppRoutes.otpScreen, arguments: {"email": email});
     } catch (e) {
       debugPrint(e.toString());
@@ -68,6 +71,8 @@ class AuthController extends GetxController {
       final token = decoded["token"];
       final storageController = Get.find<StorageController>();
       await storageController.storeToken(token);
+      final userController = Get.find<UserController>();
+      await userController.getUserDetails();
       Get.offAllNamed(AppRoutes.bottomNavigationScreen);
     } catch (e) {
       debugPrint(e.toString());
@@ -155,4 +160,5 @@ class AuthController extends GetxController {
       debugPrint(e.toString());
     }
   }
+
 }

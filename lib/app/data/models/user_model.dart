@@ -9,7 +9,7 @@ class UserModel {
     return UserModel(
       name: json["name"] ?? "",
       email: json["email"] ?? "",
-      credits: num.tryParse(json["credits"] ?? "0.0") ?? 0.0,
+      credits: num.tryParse(json["credits"].toString()) ?? 0.0,
     );
   }
 }

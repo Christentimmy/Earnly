@@ -212,7 +212,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const HomeScreen(),
+                              builder: (_) =>  HomeScreen(),
                             ),
                           );
                         },
