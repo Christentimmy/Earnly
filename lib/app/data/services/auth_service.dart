@@ -2,6 +2,7 @@ import "dart:async";
 import "dart:convert";
 import "dart:io";
 import "package:earnly/app/utils/base_url.dart";
+import "package:earnly/app/widgets/snack_bar.dart";
 import "package:flutter/material.dart";
 import "package:http/http.dart" as http;
 
@@ -34,4 +35,48 @@ class AuthService {
     }
     return null;
   }
+
+  Future<http.Response?> verifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/auth/verify-otp'),
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode({"email": email, "otp": otp}),
+          )
+          .timeout(const Duration(seconds: 30));
+      return response;
+    } on SocketException {
+      CustomSnackbar.showErrorToast("No internet connection");
+    } on TimeoutException {
+      CustomSnackbar.showErrorToast("Request timeout, please try again");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<http.Response?> sendOtp({required String email}) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/auth/send-otp'),
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode({"email": email}),
+          )
+          .timeout(const Duration(seconds: 30));
+      return response;
+    } on SocketException {
+      CustomSnackbar.showErrorToast("No internet connection");
+    } on TimeoutException {
+      CustomSnackbar.showErrorToast("Request timeout, please try again");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
 }
