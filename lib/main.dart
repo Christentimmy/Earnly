@@ -1,4 +1,7 @@
+import 'package:earnly/app/bindings/app_bindings.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'screens/onboarding_screen_1.dart';
 
 void main() {
@@ -10,8 +13,13 @@ class EarnlyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      title: "Earnly",
+      theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme(),
+      ),
       debugShowCheckedModeBanner: false,
+      initialBinding: AppBindings(),
       home: const OnboardingScreen1(),
     );
   }
