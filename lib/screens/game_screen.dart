@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
+import '../app/modules/home/views/home_screen.dart';
 import 'settings_screen.dart';
 import 'wallet_screen.dart';
 import 'wheel_spin_screen.dart';

@@ -1,7 +1,9 @@
+import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'register_screen.dart';
 import 'forget_password_screen.dart';
-import '../app/modules/home/views/home_screen.dart';
+// import 'home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -81,11 +83,12 @@ class LoginScreen extends StatelessWidget {
                     elevation: 0,
                   ),
                   onPressed: () {
+                    Get.toNamed(AppRoutes.homeScreen);
                     // ✅ Navigate to HomeScreen after login
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => const HomeScreen()),
-                    );
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(builder: (_) => const HomeScreen()),
+                    // );
                   },
                   child: const Text(
                     "Login",
