@@ -128,7 +128,10 @@ class AuthController extends GetxController {
   Future<void> validateToken({required String token}) async {
     try {
       final response = await authService.validateToken(token: token);
-      if (response == null) return;
+      if (response == null) {
+        Get.offAllNamed(AppRoutes.welcomeScreen);
+        return;
+      }
       final decoded = json.decode(response.body);
       String message = decoded["message"];
       String email = decoded["email"];
@@ -144,6 +147,7 @@ class AuthController extends GetxController {
       }
       if (response.statusCode != 200) {
         CustomSnackbar.showErrorToast(message);
+        Get.offAllNamed(AppRoutes.welcomeScreen);
         return;
       }
       Get.offAllNamed(AppRoutes.bottomNavigationScreen);

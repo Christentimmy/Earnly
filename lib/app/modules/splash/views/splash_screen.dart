@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
         return;
       }
       final authController = Get.find<AuthController>();
-      authController.validateToken(token: token);
+      await authController.validateToken(token: token);
     });
   }
 
