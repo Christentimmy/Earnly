@@ -127,12 +127,12 @@ class _ForgetPasswordCodeScreenState extends State<ForgetPasswordCodeScreen> {
                           _controllers.map((c) => c.text).join().trim();
                       if (code.length == 6) {
                         // Example action — navigate to login
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginScreen(),
-                          ),
-                        );
+                        // Navigator.pushReplacement(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => const LoginScreen(),
+                        //   ),
+                        // );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -156,12 +156,12 @@ class _ForgetPasswordCodeScreenState extends State<ForgetPasswordCodeScreen> {
                 /// Back to Login
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    );
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const LoginScreen(),
+                    //   ),
+                    // );
                   },
                   child: const Text(
                     "Back to Login",

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:earnly/app/controllers/auth_controller.dart';
 import 'package:earnly/app/resources/colors.dart';
 import 'package:earnly/app/widgets/custom_button.dart';
@@ -5,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
-import 'login_screen.dart';
 
 class OtpScreen extends StatelessWidget {
   final String email;
@@ -14,11 +14,23 @@ class OtpScreen extends StatelessWidget {
 
   final pinController = TextEditingController();
   final authController = Get.find<AuthController>();
+  final RxInt resendOtpTimer = 60.obs;
+
+  void startResendOtpTimer() {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (resendOtpTimer.value > 0) {
+        resendOtpTimer.value--;
+      } else {
+        timer.cancel();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    startResendOtpTimer();
     return Scaffold(
-      extendBodyBehindAppBar: true, // make sure background covers status bar
+      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           /// Background Image (fills full screen)
@@ -42,7 +54,7 @@ class OtpScreen extends StatelessWidget {
                   "OTP Verification",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 33,
+                    fontSize: 25,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
@@ -63,17 +75,35 @@ class OtpScreen extends StatelessWidget {
                     keyboardType: TextInputType.number,
                     length: 6,
                     closeKeyboardWhenCompleted: true,
-                    onCompleted: (value) {
-                      
+                    onCompleted: (value) async {
+                      await authController.verifyOtp(
+                        email: email,
+                        otp: value,
+                        whatNext: whatNext,
+                      );
                     },
                     defaultPinTheme: PinTheme(
+                      height: 55,
+                      width: 55,
+                      textStyle: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFF6F6F6),
                         borderRadius: BorderRadius.circular(10),
-                        // border: Border.all(color: Colors.grey),
+                        border: Border.all(color: Colors.grey),
                       ),
                     ),
                     focusedPinTheme: PinTheme(
+                      height: 55,
+                      width: 55,
+                      textStyle: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFF6F6F6),
                         borderRadius: BorderRadius.circular(10),
@@ -82,41 +112,19 @@ class OtpScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: List.generate(6, (index) {
-                //     return SizedBox(
-                //       width: 48,
-                //       height: 55,
-                //       child: TextField(
-                //         controller: _controllers[index],
-                //         focusNode: _focusNodes[index],
-                //         keyboardType: TextInputType.number,
-                //         textAlign: TextAlign.center,
-                //         maxLength: 1,
-                //         style: const TextStyle(
-                //           fontSize: 22,
-                //           fontWeight: FontWeight.bold,
-                //         ),
-                //         decoration: InputDecoration(
-                //           counterText: '',
-                //           filled: true,
-                //           fillColor: const Color(0xFFF6F6F6),
-                //           border: OutlineInputBorder(
-                //             borderRadius: BorderRadius.circular(10),
-                //             borderSide: BorderSide.none,
-                //           ),
-                //         ),
-                //         onChanged: (value) => _onDigitChanged(value, index),
-                //       ),
-                //     );
-                //   }),
-                // ),
                 const SizedBox(height: 50),
 
                 /// Continue Button
                 CustomButton(
-                  ontap: () async {},
+                  ontap: () async {
+                    if (authController.isloading.value) return;
+                    if (pinController.text.isEmpty) return;
+                    await authController.verifyOtp(
+                      email: email,
+                      otp: pinController.text,
+                      whatNext: whatNext,
+                    );
+                  },
                   isLoading: authController.isloading,
                   child: Text(
                     "Continue",
@@ -129,24 +137,29 @@ class OtpScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 25),
 
-                /// Back to Login
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Didn’t receive OTP? "),
+                    Obx(
+                      () => InkWell(
+                        onTap: () async {
+                          if (resendOtpTimer.value > 0) return;
+                          await authController.sendOtp(email: email);
+                        },
+                        child: Text(
+                          resendOtpTimer.value > 0
+                              ? "${resendOtpTimer.value}s"
+                              : "Resend",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: AppColors.primaryColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
-                    );
-                  },
-                  child: const Text(
-                    "Back to Login",
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),

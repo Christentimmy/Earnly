@@ -1,10 +1,20 @@
+import 'package:earnly/app/controllers/auth_controller.dart';
+import 'package:earnly/app/widgets/custom_button.dart';
+import 'package:earnly/app/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'register_screen.dart';
 import 'forget_password_screen.dart';
 import '../app/modules/home/views/home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
+
+  final formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +44,20 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 40),
 
               // Username or Email
-              _buildTextField(
-                hintText: "Username or Email",
-                obscureText: false,
-              ),
+              // _buildTextField(
+              //   hintText: "Username or Email",
+              //   obscureText: false,
+              // ),
+              CustomTextField(hintText: "Email", controller: emailController),
               const SizedBox(height: 16),
 
               // Password
               _buildTextField(hintText: "Password", obscureText: true),
+              CustomTextField(
+                hintText: "Password",
+                controller: passwordController,
+                isObscure: true,
+              ),
 
               // Forget password link
               Align(
@@ -69,6 +85,25 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 10),
 
               // Login button
+              CustomButton(
+                isLoading: authController.isloading,
+                child: Text(
+                  "Login",
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+                ontap: () async {
+                  if (formKey.currentState!.validate()) {
+                    await authController.login(
+                      email: emailController.text,
+                      password: passwordController.text,
+                    );
+                  }
+                },
+              ),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

@@ -7,6 +7,7 @@ import 'package:earnly/app/modules/onboarding/views/onboarding_screen_1.dart';
 import 'package:earnly/app/modules/onboarding/views/onboarding_screen_2.dart';
 import 'package:earnly/app/modules/onboarding/views/welcome_screen.dart';
 import 'package:earnly/app/routes/app_routes.dart';
+import 'package:earnly/app/widgets/bottom_navigation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,7 +22,7 @@ class AppPages {
       page: () => const OnboardingScreen2(),
     ),
     GetPage(name: AppRoutes.welcomeScreen, page: () => const WelcomeScreen()),
-    GetPage(name: AppRoutes.loginScreen, page: () => const LoginScreen()),
+    GetPage(name: AppRoutes.loginScreen, page: () => LoginScreen()),
     GetPage(name: AppRoutes.registerScreen, page: () => RegisterScreen()),
     GetPage(
       name: AppRoutes.forgetPasswordScreen,
@@ -40,5 +41,12 @@ class AppPages {
       },
     ),
     GetPage(name: AppRoutes.homeScreen, page: () => const HomeScreen()),
+    // GetPage(name: AppRoutes.gameScreen, page: () => const GameScreen()),
+    // GetPage(name: AppRoutes.walletScreen, page: () => const WalletScreen()),
+    // GetPage(name: AppRoutes.settingsScreen, page: () => const SettingsScreen()),
+    GetPage(
+      name: AppRoutes.bottomNavigationScreen,
+      page: () => const FloatingBottomNavigationWidget(),
+    ),
   ];
 }

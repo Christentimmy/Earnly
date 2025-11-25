@@ -1,8 +1,6 @@
-
 import 'package:earnly/app/resources/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // ignore: must_be_immutable
@@ -102,7 +100,13 @@ class CustomTextField extends StatelessWidget {
         cursorColor: AppColors.primaryColor,
         controller: controller,
         keyboardType: keyboardType,
-        style: textStyle ?? Get.textTheme.bodyMedium,
+        style:
+            textStyle ??
+            GoogleFonts.poppins(
+              fontSize: 13,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
         maxLines: maxLines ?? 1,
         minLines: minLines ?? 1,
         decoration: InputDecoration(

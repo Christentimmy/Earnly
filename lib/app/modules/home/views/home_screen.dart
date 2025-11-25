@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../screens/game_screen.dart';
-import '../../../../screens/settings_screen.dart';
-import '../../../../screens/wallet_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -235,80 +232,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            // 🔹 Bottom Navigation (reduced height + navigation)
-            Positioned(
-              bottom: 20,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  height: 55,
-                  width: 280,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(40),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const Icon(Icons.home, color: Colors.black, size: 28),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.videogame_asset_outlined,
-                          color: Colors.black54,
-                          size: 28,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const GameScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.settings_outlined,
-                          color: Colors.black54,
-                          size: 28,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const SettingsScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.wallet_outlined,
-                          color: Colors.black54,
-                          size: 28,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const WalletScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),

@@ -107,12 +107,12 @@ class ForgetPasswordScreen extends StatelessWidget {
                 /// Back to Login
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    );
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const LoginScreen(),
+                    //   ),
+                    // );
                   },
                   child: const Text(
                     "Back to Login",

@@ -64,12 +64,12 @@ class RegisterScreen extends StatelessWidget {
                       elevation: 0,
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
-                        ),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => const LoginScreen(),
+                      //   ),
+                      // );
                     },
                     child: const Text(
                       "Register",
@@ -177,10 +177,10 @@ class RegisterScreen extends StatelessWidget {
         icon: Icon(icon, color: textColor, size: 26),
         onPressed: () {
           // Navigate to LoginScreen
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
-          );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const LoginScreen()),
+          // );
         },
         label: Text(
           text,

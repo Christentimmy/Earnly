@@ -211,10 +211,10 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      );
+                      // Navigator.pushReplacement(
+                      //   context,
+                      //   MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      // );
                     },
 
                     child: const Text(

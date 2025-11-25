@@ -1,9 +1,19 @@
+import 'package:earnly/app/controllers/auth_controller.dart';
 import 'package:earnly/app/routes/app_routes.dart';
+import 'package:earnly/app/widgets/custom_button.dart';
+import 'package:earnly/app/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'forget_password_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
+
+  final formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,23 +41,33 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
-
-              // Username or Email
-              _buildTextField(
-                hintText: "Username or Email",
-                obscureText: false,
-              ),
-              const SizedBox(height: 16),
-
-              // Password
-              _buildTextField(hintText: "Password", obscureText: true),
-
-              // Forget password link
+              Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    CustomTextField(
+                      hintText: "Email",
+                      controller: emailController,
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextField(
+                      hintText: "Password",
+                      controller: passwordController,
+                      isObscure: true,
+                    ),
+                  ],
+                ),
+              ), // Forget password link
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    Get.toNamed(AppRoutes.forgetPasswordScreen);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ForgetPasswordScreen(),
+                      ),
+                    );
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
@@ -63,30 +83,25 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 10),
 
               // Login button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF9DF5AE),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    elevation: 0,
-                  ),
-                  onPressed: () {
-                    Get.toNamed(AppRoutes.homeScreen);
-                    },
-                  child: const Text(
-                    "Login",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
+              CustomButton(
+                isLoading: authController.isloading,
+                child: Text(
+                  "Login",
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
                   ),
                 ),
+                ontap: () async {
+                  if (!formKey.currentState!.validate()) return;
+                  await authController.login(
+                    email: emailController.text,
+                    password: passwordController.text,
+                  );
+                },
               ),
+
               const SizedBox(height: 20),
 
               // Bottom Register text
@@ -99,7 +114,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                     Get.toNamed(AppRoutes.registerScreen);
+                      Get.toNamed(AppRoutes.registerScreen);
                     },
                     child: const Text(
                       "Register account",
@@ -114,29 +129,6 @@ class LoginScreen extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  // Custom text field widget
-  Widget _buildTextField({
-    required String hintText,
-    required bool obscureText,
-  }) {
-    return TextField(
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        hintText: hintText,
-        filled: true,
-        fillColor: const Color(0xFFF6F6F6),
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 16,
-          horizontal: 16,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
         ),
       ),
     );

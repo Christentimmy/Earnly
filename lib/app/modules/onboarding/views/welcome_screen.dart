@@ -1,4 +1,6 @@
+import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -90,6 +92,7 @@ class WelcomeScreen extends StatelessWidget {
                       elevation: 0,
                     ),
                     onPressed: () {
+                      Get.toNamed(AppRoutes.registerScreen);
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(

@@ -7,6 +7,7 @@ import "package:flutter/material.dart";
 import "package:http/http.dart" as http;
 
 class AuthService {
+
   Future<http.Response?> register({
     required String name,
     required String email,
@@ -23,7 +24,31 @@ class AuthService {
               "password": password,
             }),
           )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+    } on TimeoutException {
+      debugPrint("Request timeout");
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+    return null;
+  }
+
+  Future<http.Response?> login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse("$baseUrl/auth/login"),
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode({"email": email, "password": password}),
+          )
+          .timeout(const Duration(seconds: 30));
       return response;
     } on SocketException catch (e) {
       debugPrint("No internet connection $e");
