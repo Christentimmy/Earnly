@@ -1,0 +1,102 @@
+import 'dart:math' as math;
+
+import 'package:earnly/app/controllers/earn_controller.dart';
+import 'package:earnly/app/modules/games/widgets/reward_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class WheelSpinController extends GetxController
+    with GetTickerProviderStateMixin {
+  late AnimationController controller;
+  late Animation<double> animation;
+  final isSpinning = false.obs;
+  final hasSpunToday = false.obs;
+  final lastReward = 0.obs;
+  final earnController = Get.find<EarnController>();
+
+  final RxList<int> rewards = <int>[].obs;
+  final List<Color> segmentColors = [
+    const Color(0xFF2D3142),
+    const Color(0xFF4F5D75),
+    const Color(0xFF2D3142),
+    const Color(0xFF4F5D75),
+
+    const Color(0xFF2D3142),
+    const Color(0xFF4F5D75),
+    const Color(0xFF2D3142),
+    const Color(0xFF4F5D75),
+  ];
+
+  @override
+  void onInit() {
+    super.onInit();
+    init();
+  }
+
+  init() async {
+    if (earnController.wheelSpinRewards.isEmpty) {
+      earnController.getWheelSpinRewards();
+    }
+    rewards.value = earnController.wheelSpinRewards;
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 4000),
+      vsync: this,
+    );
+
+    animation = Tween<double>(
+      begin: 0,
+      end: 0,
+    ).animate(CurvedAnimation(parent: controller, curve: Curves.linear));
+    checkIfSpunToday();
+  }
+
+  void checkIfSpunToday() {
+    hasSpunToday.value = false;
+  }
+
+  void spinWheel() {
+    if (isSpinning.value || hasSpunToday.value) return;
+    isSpinning.value = true;
+
+    final random = math.Random();
+    final rewardIndex = random.nextInt(rewards.length);
+    final reward = rewards[rewardIndex];
+
+    final segmentAngle = 360.0 / rewards.length;
+    final targetAngle = (rewardIndex + 1) * segmentAngle;
+    final endAngle = targetAngle - segmentAngle;
+    final middleAngle = (targetAngle + endAngle) / 2;
+
+    final adjustedAngle = 360 - middleAngle;
+
+    final fullRotations = 360 * (random.nextInt(6) + 1);
+    final totalRotation = (fullRotations) + adjustedAngle;
+
+    animation = Tween<double>(
+      begin: 0,
+      end: totalRotation,
+    ).animate(CurvedAnimation(parent: controller, curve: Curves.easeOutCubic));
+
+    controller.forward(from: 0).then((_) {
+      isSpinning.value = false;
+      hasSpunToday.value = true;
+      lastReward.value = reward;
+      _showRewardPopup(reward);
+      controller.reset();
+    });
+  }
+
+  void _showRewardPopup(int reward) {
+    showDialog(
+      context: Get.context!,
+      barrierDismissible: false,
+      builder: (context) => RewardPopup(reward: reward),
+    );
+  }
+
+  @override
+  void onClose() {
+    controller.dispose();
+    super.onClose();
+  }
+}

@@ -1,109 +1,18 @@
-import 'package:earnly/app/modules/games/widgets/reward_widget.dart';
+import 'package:earnly/app/modules/games/controllers/wheel_spin_controller.dart';
 import 'package:earnly/app/modules/games/widgets/triangle_pointer.dart';
+import 'package:earnly/app/modules/games/widgets/wheel_painter.dart';
 import 'package:earnly/app/resources/colors.dart';
+import 'package:earnly/app/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-class WheelSpinScreen extends StatefulWidget {
-  const WheelSpinScreen({super.key});
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-  @override
-  State<WheelSpinScreen> createState() => _WheelSpinScreenState();
-}
+class WheelSpinScreen extends StatelessWidget {
+  WheelSpinScreen({super.key});
 
-class _WheelSpinScreenState extends State<WheelSpinScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-  bool _isSpinning = false;
-  bool _hasSpunToday = false;
-  int? _lastReward;
-
-  final List<int> _rewards = [5, 10, 20, 50, 70, 90, 150, 250];
-  final List<Color> _segmentColors = [
-    const Color(0xFF2D3142),
-    const Color(0xFF4F5D75),
-    const Color(0xFF2D3142),
-    const Color(0xFF4F5D75),
-
-    const Color(0xFF2D3142),
-    const Color(0xFF4F5D75),
-    const Color(0xFF2D3142),
-    const Color(0xFF4F5D75),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 4000),
-      vsync: this,
-    );
-
-    _animation = Tween<double>(
-      begin: 0,
-      end: 0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.linear));
-
-    // _checkIfSpunToday();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _checkIfSpunToday() {
-    setState(() {
-      _hasSpunToday = false;
-    });
-  }
-
-  void _spinWheel() {
-    if (_isSpinning || _hasSpunToday) return;
-
-    setState(() {
-      _isSpinning = true;
-    });
-
-    final random = math.Random();
-    final rewardIndex = random.nextInt(_rewards.length);
-    final reward = _rewards[rewardIndex];
-
-    final segmentAngle = 360.0 / _rewards.length;
-    final targetAngle = (rewardIndex + 1) * segmentAngle;
-    final endAngle = targetAngle - segmentAngle;
-    final middleAngle = (targetAngle + endAngle) / 2;
-
-    final adjustedAngle = 360 - middleAngle;
-
-    final fullRotations = 360 * (random.nextInt(6) + 1);
-    final totalRotation = (fullRotations) + adjustedAngle;
-
-    _animation = Tween<double>(
-      begin: 0,
-      end: totalRotation,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
-
-    _controller.forward(from: 0).then((_) {
-      setState(() {
-        _isSpinning = false;
-        // _hasSpunToday = true;
-        _lastReward = reward;
-      });
-      _showRewardPopup(reward);
-      _controller.reset();
-    });
-  }
-
-  void _showRewardPopup(int reward) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => RewardPopup(reward: reward),
-    );
-  }
+  final wheelSpinController = Get.put(WheelSpinController());
 
   @override
   Widget build(BuildContext context) {
@@ -114,58 +23,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
         child: Column(
           children: [
             // Minimalist Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: const Color(0xFF2D3142),
-                        width: 1,
-                      ),
-                      image: const DecorationImage(
-                        image: AssetImage("assets/images/profile.png"),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF1A1D2E),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: const Color(0xFF2D3142),
-                        width: 1,
-                      ),
-                    ),
-                    child: Row(
-                      children: const [
-                        Icon(Icons.circle, color: Color(0xFFBFA26C), size: 8),
-                        SizedBox(width: 8),
-                        Text(
-                          "1,250",
-                          style: TextStyle(
-                            color: Color(0xFFE8E8E8),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            buildHeader(),
 
             const SizedBox(height: 40),
 
@@ -193,18 +51,21 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                   ),
                 ),
               ),
-              child: Text(
-                _hasSpunToday ? "COMPLETED TODAY" : "ONE SPIN AVAILABLE",
-                style: TextStyle(
-                  color:
-                      _hasSpunToday
-                          ? const Color(0xFF6B7280)
-                          : const Color(0xFFBFA26C),
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1.5,
-                ),
-              ),
+              child: Obx(() {
+                final hasSpunToday = wheelSpinController.hasSpunToday.value;
+                return Text(
+                  hasSpunToday ? "COMPLETED TODAY" : "ONE SPIN AVAILABLE",
+                  style: TextStyle(
+                    color:
+                        hasSpunToday
+                            ? const Color(0xFF6B7280)
+                            : const Color(0xFFBFA26C),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.5,
+                  ),
+                );
+              }),
             ),
 
             const SizedBox(height: 60),
@@ -224,9 +85,9 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                         // color: Colors.red,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(
-                              0xFFBFA26C,
-                            ).withValues(alpha: 0.15),
+                            color: AppColors.primaryColor.withValues(
+                              alpha: 0.15,
+                            ),
                             blurRadius: 60,
                             spreadRadius: 10,
                           ),
@@ -236,15 +97,17 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
 
                     // Wheel
                     AnimatedBuilder(
-                      animation: _animation,
+                      animation: wheelSpinController.animation,
                       builder: (context, child) {
+                        final animationValue =
+                            wheelSpinController.animation.value;
                         return Transform.rotate(
-                          angle: _animation.value * math.pi / 180,
+                          angle: animationValue * math.pi / 180,
                           child: CustomPaint(
                             size: const Size(260, 260),
                             painter: WheelPainter(
-                              rewards: _rewards,
-                              colors: _segmentColors,
+                              rewards: wheelSpinController.rewards,
+                              colors: wheelSpinController.segmentColors,
                             ),
                           ),
                         );
@@ -291,182 +154,99 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
             ),
 
             // Info text
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: Text(
-                _hasSpunToday && _lastReward != null
-                    ? "You earned $_lastReward coins today"
-                    : "Win between ${_rewards.first} and ${_rewards.last} coins",
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xFF6B7280),
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 0.3,
+            Obx(() {
+              final hasSpunToday = wheelSpinController.hasSpunToday.value;
+              final lastReward = wheelSpinController.lastReward.value;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Text(
+                  hasSpunToday && lastReward != 0
+                      ? "You earned $lastReward coins today"
+                      : "Win between ${wheelSpinController.rewards.first} and ${wheelSpinController.rewards.last} coins",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Color(0xFF6B7280),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 0.3,
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
 
             const SizedBox(height: 32),
 
             // Spin button
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: GestureDetector(
-                onTap: _spinWheel,
-                child: Container(
-                  width: double.infinity,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    color:
-                        (_isSpinning || _hasSpunToday)
-                            ? const Color(0xFF1A1D2E)
-                            : const Color(0xFFBFA26C),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color:
-                          (_isSpinning || _hasSpunToday)
-                              ? const Color(0xFF2D3142)
-                              : const Color(0xFFBFA26C),
-                      width: 1,
-                    ),
-                  ),
-                  child: Center(
-                    child:
-                        _isSpinning
-                            ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    color: Color(0xFFBFA26C),
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                                SizedBox(width: 12),
-                                Text(
-                                  "SPINNING",
-                                  style: TextStyle(
-                                    color: Color(0xFFBFA26C),
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 2,
-                                  ),
-                                ),
-                              ],
-                            )
-                            : Text(
-                              _hasSpunToday ? "RETURN TOMORROW" : "SPIN WHEEL",
-                              style: TextStyle(
-                                color:
-                                    (_isSpinning || _hasSpunToday)
-                                        ? const Color(0xFF6B7280)
-                                        : const Color(0xFF0A0E27),
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 2,
-                              ),
-                            ),
+            Obx(() {
+              if (wheelSpinController.hasSpunToday.value) {
+                return SizedBox.shrink();
+              }
+              return CustomButton(
+                ontap: () {
+                  wheelSpinController.spinWheel();
+                },
+                isLoading: false.obs,
+                child: Text(
+                  "SPIN WHEEL",
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 2,
                   ),
                 ),
-              ),
-            ),
-
+              );
+            }),
             const SizedBox(height: 80),
           ],
         ),
       ),
     );
   }
-}
 
-// Custom Wheel Painter
-class WheelPainter extends CustomPainter {
-  final List<int> rewards;
-  final List<Color> colors;
-
-  WheelPainter({required this.rewards, required this.colors});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
-    final segmentAngle = 2 * math.pi / rewards.length;
-
-    for (int i = 0; i < rewards.length; i++) {
-      // Draw segment
-      final paint =
-          Paint()
-            ..color = colors[i]
-            ..style = PaintingStyle.fill;
-
-      final startAngle = -math.pi / 2 + (i * segmentAngle);
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        startAngle,
-        segmentAngle,
-        true,
-        paint,
-      );
-
-      // Draw subtle border
-      final borderPaint =
-          Paint()
-            ..color = const Color(0xFF0A0E27)
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1;
-
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        startAngle,
-        segmentAngle,
-        true,
-        borderPaint,
-      );
-
-      // Draw text
-      final textAngle = startAngle + segmentAngle / 2;
-      final textRadius = radius * 0.7;
-      final textX = center.dx + textRadius * math.cos(textAngle);
-      final textY = center.dy + textRadius * math.sin(textAngle);
-
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: rewards[i].toString(),
-          style: const TextStyle(
-            color: Color(0xFFBFA26C),
-            fontSize: 22,
-            fontWeight: FontWeight.w300,
-            letterSpacing: 1,
+  Padding buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: const Color(0xFF2D3142), width: 1),
+              image: const DecorationImage(
+                image: AssetImage("assets/images/profile.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-        ),
-        textDirection: TextDirection.ltr,
-      );
-
-      textPainter.layout();
-
-      canvas.save();
-      canvas.translate(textX, textY);
-      canvas.rotate(textAngle + math.pi / 2);
-      textPainter.paint(
-        canvas,
-        Offset(-textPainter.width / 2, -textPainter.height / 2),
-      );
-      canvas.restore();
-    }
-
-    // Draw outer circle border
-    final outerBorderPaint =
-        Paint()
-          ..color = const Color(0xFFBFA26C)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2;
-
-    canvas.drawCircle(center, radius, outerBorderPaint);
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1A1D2E),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFF2D3142), width: 1),
+            ),
+            child: Row(
+              children: const [
+                Icon(Icons.circle, color: Colors.white, size: 8),
+                SizedBox(width: 8),
+                Text(
+                  "1,250",
+                  style: TextStyle(
+                    color: Color(0xFFE8E8E8),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

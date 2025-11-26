@@ -55,10 +55,12 @@ class EarnController extends GetxController {
         debugPrint(message);
         return;
       }
-      wheelSpinRewards.value = decoded["data"] ?? [];
+      List<dynamic> data = decoded["data"] ?? [];
+      if (data.isEmpty) return;
+      List<int> mapped = data.map((e) => e as int).toList();
+      wheelSpinRewards.value = mapped;
     } catch (e) {
       debugPrint(e.toString());
     }
   }
-
 }

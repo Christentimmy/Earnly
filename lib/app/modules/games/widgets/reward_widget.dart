@@ -67,7 +67,7 @@ class _RewardPopupState extends State<RewardPopup>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withValues(alpha: 0.5),
                   blurRadius: 40,
                   spreadRadius: 10,
                 ),
