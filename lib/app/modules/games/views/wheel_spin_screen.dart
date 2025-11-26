@@ -1,5 +1,8 @@
+import 'package:earnly/app/controllers/earn_controller.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'package:earnly/app/resources/colors.dart';
+import 'package:get/get.dart';
 
 class WheelSpinScreen extends StatefulWidget {
   const WheelSpinScreen({super.key});
@@ -16,29 +19,10 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
   bool _hasSpunToday = false;
   int? _lastReward;
 
-  final List<int> _rewards = [250, 5, 10, 20, 50, 70, 90, 150];
-  final List<Color> _segmentColors = [
-    const Color(0xFF2D3142),
-    const Color(0xFF4F5D75),
-    const Color(0xFF2D3142),
-    const Color(0xFF4F5D75),
-
-    const Color(0xFF2D3142),
-    const Color(0xFF4F5D75),
-    const Color(0xFF2D3142),
-    const Color(0xFF4F5D75),
-  ];
-
-  static final Map<int, double> eachSegmentAngle = {
-    250: 22,
-    5: 67,
-    10: 112,
-    20: 157,
-    50: 202,
-    70: 247,
-    90: 292,
-    150: 337,
-  };
+  final List<int> _rewards = [5, 10, 20, 50, 70, 90, 150, 250];
+  // Use colors from AppColors
+  final List<Color> _segmentColors = AppColors.wheelSegmentColors;
+  final earnController = Get.find<EarnController>();
 
   @override
   void initState() {
@@ -54,6 +38,10 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.linear));
 
     // _checkIfSpunToday();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (earnController.wheelSpinRewards.isNotEmpty) return;
+      earnController.getWheelSpinRewards();
+    });
   }
 
   @override
@@ -78,22 +66,16 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
     final random = math.Random();
     final rewardIndex = random.nextInt(_rewards.length);
     final reward = _rewards[rewardIndex];
-    print("Reward: $reward");
-    print("Reward Index: $rewardIndex");
 
     final segmentAngle = 360.0 / _rewards.length;
-    // Calculate the angle to the middle of the target segment
-    // final targetAngle = (rewardIndex * segmentAngle) + (segmentAngle / 2);
-    final targetAngle = eachSegmentAngle[reward] ?? 0;
-    print("Target Angle: $targetAngle");
-    // Convert to negative for clockwise rotation and adjust for the starting position
-    final adjustedAngle = 360 - targetAngle;
-    // print("Adjusted Angle: $adjustedAngle");
+    final targetAngle = (rewardIndex + 1) * segmentAngle;
+    final endAngle = targetAngle - segmentAngle;
+    final middleAngle = (targetAngle + endAngle) / 2;
 
-    // final fullRotations = 5 + random.nextDouble() * 2;
+    final adjustedAngle = 360 - middleAngle;
+
     final fullRotations = 360 * (random.nextInt(6) + 1);
     final totalRotation = (fullRotations) + adjustedAngle;
-    // final totalRotation = adjustedAngle;
 
     _animation = Tween<double>(
       begin: 0,
@@ -122,7 +104,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0E27),
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -138,7 +120,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: const Color(0xFF2D3142),
+                        color: AppColors.borderColor,
                         width: 1,
                       ),
                       image: const DecorationImage(
@@ -153,10 +135,10 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1A1D2E),
+                      color: AppColors.backgroundColor.withOpacity(0.8),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: const Color(0xFF2D3142),
+                        color: AppColors.borderColor,
                         width: 1,
                       ),
                     ),
@@ -167,7 +149,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                         Text(
                           "1,250",
                           style: TextStyle(
-                            color: Color(0xFFE8E8E8),
+                            color: AppColors.textColor,
                             fontWeight: FontWeight.w600,
                             fontSize: 15,
                             letterSpacing: 0.5,
@@ -201,7 +183,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: const Color(0xFFBFA26C).withOpacity(0.3),
+                    color: AppColors.accentColor.withOpacity(0.3),
                     width: 1,
                   ),
                 ),
@@ -211,8 +193,8 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                 style: TextStyle(
                   color:
                       _hasSpunToday
-                          ? const Color(0xFF6B7280)
-                          : const Color(0xFFBFA26C),
+                          ? AppColors.secondaryTextColor
+                          : AppColors.accentColor,
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 1.5,
@@ -237,9 +219,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                         // color: Colors.red,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(
-                              0xFFBFA26C,
-                            ).withValues(alpha: 0.15),
+                            color: AppColors.textColor,
                             blurRadius: 60,
                             spreadRadius: 10,
                           ),
@@ -270,9 +250,9 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                       height: 70,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: const Color(0xFF0A0E27),
+                        color: AppColors.backgroundColor,
                         border: Border.all(
-                          color: const Color(0xFFBFA26C),
+                          color: AppColors.accentColor,
                           width: 2,
                         ),
                         boxShadow: [
@@ -285,7 +265,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                       ),
                       child: const Icon(
                         Icons.star_border,
-                        color: Color(0xFFBFA26C),
+                        color: AppColors.accentColor,
                         size: 32,
                       ),
                     ),
@@ -312,7 +292,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                     : "Win between 5 and 70 coins",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  color: Color(0xFF6B7280),
+                  color: AppColors.secondaryTextColor,
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
                   letterSpacing: 0.3,
@@ -333,14 +313,14 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                   decoration: BoxDecoration(
                     color:
                         (_isSpinning || _hasSpunToday)
-                            ? const Color(0xFF1A1D2E)
-                            : const Color(0xFFBFA26C),
+                            ? AppColors.backgroundColor.withOpacity(0.8)
+                            : AppColors.accentColor,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color:
                           (_isSpinning || _hasSpunToday)
-                              ? const Color(0xFF2D3142)
-                              : const Color(0xFFBFA26C),
+                              ? AppColors.borderColor
+                              : AppColors.accentColor,
                       width: 1,
                     ),
                   ),
@@ -354,7 +334,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                                   width: 16,
                                   height: 16,
                                   child: CircularProgressIndicator(
-                                    color: Color(0xFFBFA26C),
+                                    color: AppColors.accentColor,
                                     strokeWidth: 2,
                                   ),
                                 ),
@@ -362,7 +342,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                                 Text(
                                   "SPINNING",
                                   style: TextStyle(
-                                    color: Color(0xFFBFA26C),
+                                    color: AppColors.accentColor,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
                                     letterSpacing: 2,
@@ -375,8 +355,8 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                               style: TextStyle(
                                 color:
                                     (_isSpinning || _hasSpunToday)
-                                        ? const Color(0xFF6B7280)
-                                        : const Color(0xFF0A0E27),
+                                        ? AppColors.accentColor
+                                        : AppColors.backgroundColor,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 2,
@@ -427,7 +407,7 @@ class WheelPainter extends CustomPainter {
       // Draw subtle border
       final borderPaint =
           Paint()
-            ..color = const Color(0xFF0A0E27)
+            ..color = AppColors.borderColor
             ..style = PaintingStyle.stroke
             ..strokeWidth = 1;
 
@@ -449,7 +429,7 @@ class WheelPainter extends CustomPainter {
         text: TextSpan(
           text: rewards[i].toString(),
           style: const TextStyle(
-            color: Color(0xFFBFA26C),
+            color: AppColors.accentColor,
             fontSize: 22,
             fontWeight: FontWeight.w300,
             letterSpacing: 1,
@@ -473,7 +453,7 @@ class WheelPainter extends CustomPainter {
     // Draw outer circle border
     final outerBorderPaint =
         Paint()
-          ..color = const Color(0xFFBFA26C)
+          ..color = AppColors.accentColor
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2;
 
@@ -490,7 +470,7 @@ class TrianglePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = const Color(0xFFBFA26C)
+          ..color = AppColors.accentColor
           ..style = PaintingStyle.fill;
 
     final path = Path();
@@ -561,10 +541,10 @@ class _RewardPopupState extends State<RewardPopup>
           child: Container(
             padding: const EdgeInsets.all(40),
             decoration: BoxDecoration(
-              color: const Color(0xFF0A0E27),
+              color: AppColors.backgroundColor.withOpacity(0.8),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: const Color(0xFFBFA26C).withOpacity(0.5),
+                color: AppColors.accentColor.withOpacity(0.2),
                 width: 1,
               ),
               boxShadow: [
@@ -583,14 +563,11 @@ class _RewardPopupState extends State<RewardPopup>
                   height: 80,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: const Color(0xFFBFA26C),
-                      width: 2,
-                    ),
+                    border: Border.all(color: AppColors.accentColor, width: 2),
                   ),
                   child: const Icon(
                     Icons.star_border,
-                    color: Color(0xFFBFA26C),
+                    color: AppColors.accentColor,
                     size: 40,
                   ),
                 ),
@@ -598,7 +575,7 @@ class _RewardPopupState extends State<RewardPopup>
                 const Text(
                   "Reward Claimed",
                   style: TextStyle(
-                    color: Color(0xFFE8E8E8),
+                    color: AppColors.textColor,
                     fontSize: 24,
                     fontWeight: FontWeight.w300,
                     letterSpacing: 1,
@@ -608,12 +585,12 @@ class _RewardPopupState extends State<RewardPopup>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.circle, color: Color(0xFFBFA26C), size: 8),
+                    Icon(Icons.circle, color: AppColors.accentColor, size: 8),
                     const SizedBox(width: 12),
                     Text(
                       "${widget.reward}",
                       style: const TextStyle(
-                        color: Color(0xFFBFA26C),
+                        color: AppColors.accentColor,
                         fontSize: 48,
                         fontWeight: FontWeight.w300,
                         letterSpacing: 2,
@@ -626,7 +603,7 @@ class _RewardPopupState extends State<RewardPopup>
                   "Return tomorrow for another spin",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Color(0xFF6B7280),
+                    color: AppColors.secondaryTextColor,
                     fontSize: 13,
                     fontWeight: FontWeight.w400,
                     letterSpacing: 0.3,
@@ -643,14 +620,14 @@ class _RewardPopupState extends State<RewardPopup>
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFBFA26C),
+                      color: AppColors.accentColor,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Center(
                       child: Text(
                         "CONTINUE",
                         style: TextStyle(
-                          color: Color(0xFF0A0E27),
+                          color: AppColors.backgroundColor,
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
                           letterSpacing: 2,
