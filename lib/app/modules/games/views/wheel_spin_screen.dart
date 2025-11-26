@@ -1,8 +1,8 @@
-import 'package:earnly/app/controllers/earn_controller.dart';
+import 'package:earnly/app/modules/games/widgets/reward_widget.dart';
+import 'package:earnly/app/modules/games/widgets/triangle_pointer.dart';
+import 'package:earnly/app/resources/colors.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'package:earnly/app/resources/colors.dart';
-import 'package:get/get.dart';
 
 class WheelSpinScreen extends StatefulWidget {
   const WheelSpinScreen({super.key});
@@ -20,9 +20,17 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
   int? _lastReward;
 
   final List<int> _rewards = [5, 10, 20, 50, 70, 90, 150, 250];
-  // Use colors from AppColors
-  final List<Color> _segmentColors = AppColors.wheelSegmentColors;
-  final earnController = Get.find<EarnController>();
+  final List<Color> _segmentColors = [
+    const Color(0xFF2D3142),
+    const Color(0xFF4F5D75),
+    const Color(0xFF2D3142),
+    const Color(0xFF4F5D75),
+
+    const Color(0xFF2D3142),
+    const Color(0xFF4F5D75),
+    const Color(0xFF2D3142),
+    const Color(0xFF4F5D75),
+  ];
 
   @override
   void initState() {
@@ -38,10 +46,6 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.linear));
 
     // _checkIfSpunToday();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (earnController.wheelSpinRewards.isNotEmpty) return;
-      earnController.getWheelSpinRewards();
-    });
   }
 
   @override
@@ -104,6 +108,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: const Color(0xFF0A0E27),
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Column(
@@ -120,7 +125,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: AppColors.borderColor,
+                        color: const Color(0xFF2D3142),
                         width: 1,
                       ),
                       image: const DecorationImage(
@@ -135,10 +140,10 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.backgroundColor.withOpacity(0.8),
+                      color: const Color(0xFF1A1D2E),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: AppColors.borderColor,
+                        color: const Color(0xFF2D3142),
                         width: 1,
                       ),
                     ),
@@ -149,7 +154,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                         Text(
                           "1,250",
                           style: TextStyle(
-                            color: AppColors.textColor,
+                            color: Color(0xFFE8E8E8),
                             fontWeight: FontWeight.w600,
                             fontSize: 15,
                             letterSpacing: 0.5,
@@ -183,7 +188,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: AppColors.accentColor.withOpacity(0.3),
+                    color: const Color(0xFFBFA26C).withOpacity(0.3),
                     width: 1,
                   ),
                 ),
@@ -193,8 +198,8 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                 style: TextStyle(
                   color:
                       _hasSpunToday
-                          ? AppColors.secondaryTextColor
-                          : AppColors.accentColor,
+                          ? const Color(0xFF6B7280)
+                          : const Color(0xFFBFA26C),
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 1.5,
@@ -219,7 +224,9 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                         // color: Colors.red,
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.textColor,
+                            color: const Color(
+                              0xFFBFA26C,
+                            ).withValues(alpha: 0.15),
                             blurRadius: 60,
                             spreadRadius: 10,
                           ),
@@ -250,9 +257,9 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                       height: 70,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.backgroundColor,
+                        color: const Color(0xFF0A0E27),
                         border: Border.all(
-                          color: AppColors.accentColor,
+                          color: const Color(0xFFBFA26C),
                           width: 2,
                         ),
                         boxShadow: [
@@ -265,7 +272,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                       ),
                       child: const Icon(
                         Icons.star_border,
-                        color: AppColors.accentColor,
+                        color: Color(0xFFBFA26C),
                         size: 32,
                       ),
                     ),
@@ -289,10 +296,10 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
               child: Text(
                 _hasSpunToday && _lastReward != null
                     ? "You earned $_lastReward coins today"
-                    : "Win between 5 and 70 coins",
+                    : "Win between ${_rewards.first} and ${_rewards.last} coins",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  color: AppColors.secondaryTextColor,
+                  color: Color(0xFF6B7280),
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
                   letterSpacing: 0.3,
@@ -313,14 +320,14 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                   decoration: BoxDecoration(
                     color:
                         (_isSpinning || _hasSpunToday)
-                            ? AppColors.backgroundColor.withOpacity(0.8)
-                            : AppColors.accentColor,
+                            ? const Color(0xFF1A1D2E)
+                            : const Color(0xFFBFA26C),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color:
                           (_isSpinning || _hasSpunToday)
-                              ? AppColors.borderColor
-                              : AppColors.accentColor,
+                              ? const Color(0xFF2D3142)
+                              : const Color(0xFFBFA26C),
                       width: 1,
                     ),
                   ),
@@ -334,7 +341,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                                   width: 16,
                                   height: 16,
                                   child: CircularProgressIndicator(
-                                    color: AppColors.accentColor,
+                                    color: Color(0xFFBFA26C),
                                     strokeWidth: 2,
                                   ),
                                 ),
@@ -342,7 +349,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                                 Text(
                                   "SPINNING",
                                   style: TextStyle(
-                                    color: AppColors.accentColor,
+                                    color: Color(0xFFBFA26C),
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
                                     letterSpacing: 2,
@@ -355,8 +362,8 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
                               style: TextStyle(
                                 color:
                                     (_isSpinning || _hasSpunToday)
-                                        ? AppColors.accentColor
-                                        : AppColors.backgroundColor,
+                                        ? const Color(0xFF6B7280)
+                                        : const Color(0xFF0A0E27),
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 2,
@@ -407,7 +414,7 @@ class WheelPainter extends CustomPainter {
       // Draw subtle border
       final borderPaint =
           Paint()
-            ..color = AppColors.borderColor
+            ..color = const Color(0xFF0A0E27)
             ..style = PaintingStyle.stroke
             ..strokeWidth = 1;
 
@@ -429,7 +436,7 @@ class WheelPainter extends CustomPainter {
         text: TextSpan(
           text: rewards[i].toString(),
           style: const TextStyle(
-            color: AppColors.accentColor,
+            color: Color(0xFFBFA26C),
             fontSize: 22,
             fontWeight: FontWeight.w300,
             letterSpacing: 1,
@@ -453,7 +460,7 @@ class WheelPainter extends CustomPainter {
     // Draw outer circle border
     final outerBorderPaint =
         Paint()
-          ..color = AppColors.accentColor
+          ..color = const Color(0xFFBFA26C)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2;
 
@@ -462,185 +469,4 @@ class WheelPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// Triangle Pointer Painter
-class TrianglePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = AppColors.accentColor
-          ..style = PaintingStyle.fill;
-
-    final path = Path();
-    path.moveTo(size.width / 2, size.height);
-    path.lineTo(0, 0);
-    path.lineTo(size.width, 0);
-    path.close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// Refined Reward Popup
-class RewardPopup extends StatefulWidget {
-  final int reward;
-
-  const RewardPopup({super.key, required this.reward});
-
-  @override
-  State<RewardPopup> createState() => _RewardPopupState();
-}
-
-class _RewardPopupState extends State<RewardPopup>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _scaleController;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _fadeAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _scaleController = AnimationController(
-      duration: const Duration(milliseconds: 400),
-      vsync: this,
-    );
-
-    _scaleAnimation = CurvedAnimation(
-      parent: _scaleController,
-      curve: Curves.easeOut,
-    );
-
-    _fadeAnimation = CurvedAnimation(
-      parent: _scaleController,
-      curve: Curves.easeIn,
-    );
-
-    _scaleController.forward();
-  }
-
-  @override
-  void dispose() {
-    _scaleController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: Dialog(
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding: const EdgeInsets.all(40),
-            decoration: BoxDecoration(
-              color: AppColors.backgroundColor.withOpacity(0.8),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: AppColors.accentColor.withOpacity(0.2),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  blurRadius: 40,
-                  spreadRadius: 10,
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.accentColor, width: 2),
-                  ),
-                  child: const Icon(
-                    Icons.star_border,
-                    color: AppColors.accentColor,
-                    size: 40,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                const Text(
-                  "Reward Claimed",
-                  style: TextStyle(
-                    color: AppColors.textColor,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w300,
-                    letterSpacing: 1,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.circle, color: AppColors.accentColor, size: 8),
-                    const SizedBox(width: 12),
-                    Text(
-                      "${widget.reward}",
-                      style: const TextStyle(
-                        color: AppColors.accentColor,
-                        fontSize: 48,
-                        fontWeight: FontWeight.w300,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 32),
-                const Text(
-                  "Return tomorrow for another spin",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.secondaryTextColor,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    // TODO: Call your endpoint here to update balance
-                    // await updateBalance(widget.reward);
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                      color: AppColors.accentColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "CONTINUE",
-                        style: TextStyle(
-                          color: AppColors.backgroundColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }

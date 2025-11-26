@@ -1,4 +1,5 @@
 import 'package:earnly/app/controllers/user_controller.dart';
+import 'package:earnly/app/resources/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,7 +11,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 26, 71, 38),
+      // backgroundColor: const Color.fromARGB(255, 26, 71, 38),
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Stack(
           alignment: Alignment.bottomCenter,
