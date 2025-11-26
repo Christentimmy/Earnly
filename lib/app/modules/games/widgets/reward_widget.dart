@@ -81,56 +81,42 @@ class _RewardPopupState extends State<RewardPopup>
                   height: 80,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.5),
-                      width: 2,
-                    ),
+                    border: Border.all(color: Colors.white, width: 2),
                   ),
-                  child: Icon(
-                    Icons.star_border,
-                    color: Colors.white.withValues(alpha: 0.5),
-                    size: 40,
-                  ),
+                  child: Icon(Icons.star_border, color: Colors.white, size: 40),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 5),
                 const Text(
                   "Reward Claimed",
                   style: TextStyle(
                     color: Color(0xFFE8E8E8),
-                    fontSize: 24,
+                    fontSize: 20,
                     fontWeight: FontWeight.w300,
                     letterSpacing: 1,
                   ),
                 ),
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.circle, color: Color(0xFFBFA26C), size: 8),
-                    const SizedBox(width: 12),
-                    Text(
-                      "${widget.reward}",
-                      style: GoogleFonts.poppins(
-                        color: Colors.white.withValues(alpha: 0.5),
-                        fontSize: 48,
-                        fontWeight: FontWeight.w300,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ],
+                const SizedBox(height: 10),
+                Text(
+                  "${widget.reward}",
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 48,
+                    fontWeight: FontWeight.w300,
+                    letterSpacing: 2,
+                  ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 10),
                 Text(
                   "Return tomorrow for another spin",
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
-                    color: Colors.white.withValues(alpha: 0.5),
-                    fontSize: 13,
+                    color: Colors.white,
+                    fontSize: 11,
                     fontWeight: FontWeight.w400,
                     letterSpacing: 0.3,
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 10),
 
                 CustomButton(
                   ontap: () {

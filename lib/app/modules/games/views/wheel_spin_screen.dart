@@ -1,3 +1,4 @@
+import 'package:earnly/app/controllers/user_controller.dart';
 import 'package:earnly/app/modules/games/controllers/wheel_spin_controller.dart';
 import 'package:earnly/app/modules/games/widgets/triangle_pointer.dart';
 import 'package:earnly/app/modules/games/widgets/wheel_painter.dart';
@@ -13,6 +14,7 @@ class WheelSpinScreen extends StatelessWidget {
   WheelSpinScreen({super.key});
 
   final wheelSpinController = Get.put(WheelSpinController());
+  final userController = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
@@ -161,8 +163,8 @@ class WheelSpinScreen extends StatelessWidget {
                       ? "You earned $lastReward coins today"
                       : "Win between ${wheelSpinController.rewards.first} and ${wheelSpinController.rewards.last} coins",
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Color(0xFF6B7280),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
                     fontSize: 13,
                     fontWeight: FontWeight.w400,
                     letterSpacing: 0.3,
@@ -225,18 +227,21 @@ class WheelSpinScreen extends StatelessWidget {
             border: Border.all(color: const Color(0xFF2D3142), width: 1),
           ),
           child: Row(
-            children: const [
+            children: [
               Icon(Icons.circle, color: Colors.white, size: 8),
               SizedBox(width: 8),
-              Text(
-                "1,250",
-                style: TextStyle(
-                  color: Color(0xFFE8E8E8),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
-                  letterSpacing: 0.5,
-                ),
-              ),
+              Obx(() {
+                final userModel = userController.userModel.value;
+                return Text(
+                  userModel?.credits.toString() ?? "0",
+                  style: TextStyle(
+                    color: Color(0xFFE8E8E8),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                    letterSpacing: 0.5,
+                  ),
+                );
+              }),
             ],
           ),
         ),
