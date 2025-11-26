@@ -24,7 +24,7 @@ class _RewardPopupState extends State<RewardPopup>
     super.initState();
 
     _scaleController = AnimationController(
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
 

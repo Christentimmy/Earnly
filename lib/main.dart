@@ -16,7 +16,12 @@ class EarnlyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: "Earnly",
-      theme: ThemeData(textTheme: GoogleFonts.poppinsTextTheme()),
+      theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme(),
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        splashFactory: NoSplash.splashFactory,
+      ),
       debugShowCheckedModeBanner: false,
       getPages: AppPages.pages,
       initialBinding: AppBindings(),

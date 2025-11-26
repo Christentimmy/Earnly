@@ -16,15 +16,14 @@ class WheelSpinController extends GetxController
 
   final RxList<int> rewards = <int>[].obs;
   final List<Color> segmentColors = [
-    const Color(0xFF2D3142),
-    const Color(0xFF4F5D75),
-    const Color(0xFF2D3142),
-    const Color(0xFF4F5D75),
-
-    const Color(0xFF2D3142),
-    const Color(0xFF4F5D75),
-    const Color(0xFF2D3142),
-    const Color(0xFF4F5D75),
+    const Color.fromARGB(255, 32, 70, 39),  // Primary green
+    const Color.fromARGB(255, 52, 90, 59),  // Lighter shade of primary green
+    const Color.fromARGB(255, 32, 70, 39),
+    const Color.fromARGB(255, 52, 90, 59),
+    const Color.fromARGB(255, 32, 70, 39),
+    const Color.fromARGB(255, 52, 90, 59),
+    const Color.fromARGB(255, 32, 70, 39),
+    const Color.fromARGB(255, 52, 90, 59),
   ];
 
   @override
