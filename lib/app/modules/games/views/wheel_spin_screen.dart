@@ -58,10 +58,7 @@ class WheelSpinScreen extends StatelessWidget {
                   return Text(
                     hasSpunToday ? "COMPLETED TODAY" : "ONE SPIN AVAILABLE",
                     style: TextStyle(
-                      color:
-                          hasSpunToday
-                              ? const Color(0xFF6B7280)
-                              : const Color(0xFFBFA26C),
+                      color: Colors.white,
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 1.5,
