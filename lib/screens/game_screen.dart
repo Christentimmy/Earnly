@@ -1,4 +1,6 @@
+import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../app/modules/home/views/home_screen.dart';
 import 'settings_screen.dart';
 import 'wallet_screen.dart';
@@ -162,12 +164,7 @@ class _GameScreenState extends State<GameScreen> {
                     // 🔹 Make "Wheel Spin" clickable
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const WheelSpinScreen(),
-                          ),
-                        );
+                        Get.toNamed(AppRoutes.wheelSpinScreen);
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(

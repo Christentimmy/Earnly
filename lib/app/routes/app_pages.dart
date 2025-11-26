@@ -2,6 +2,7 @@ import 'package:earnly/app/modules/auth/views/otp_screen.dart';
 import 'package:earnly/app/modules/auth/views/forget_password_screen.dart';
 import 'package:earnly/app/modules/auth/views/login_screen.dart';
 import 'package:earnly/app/modules/auth/views/register_screen.dart';
+import 'package:earnly/app/modules/games/views/wheel_spin_screen.dart';
 import 'package:earnly/app/modules/home/views/home_screen.dart';
 import 'package:earnly/app/modules/onboarding/views/onboarding_screen_1.dart';
 import 'package:earnly/app/modules/onboarding/views/onboarding_screen_2.dart';
@@ -50,5 +51,6 @@ class AppPages {
       page: () => const FloatingBottomNavigationWidget(),
     ),
     GetPage(name: AppRoutes.splashScreen, page: () => SplashScreen()),
+    GetPage(name: AppRoutes.wheelSpinScreen, page: () => WheelSpinScreen()),
   ];
 }
