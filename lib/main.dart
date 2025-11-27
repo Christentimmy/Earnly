@@ -1,4 +1,5 @@
 import 'package:earnly/app/bindings/app_bindings.dart';
+import 'package:earnly/app/resources/colors.dart';
 import 'package:earnly/app/routes/app_pages.dart';
 import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class EarnlyApp extends StatelessWidget {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         splashFactory: NoSplash.splashFactory,
+        scaffoldBackgroundColor: AppColors.backgroundColor,
       ),
       debugShowCheckedModeBanner: false,
       getPages: AppPages.pages,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../app/modules/home/views/home_screen.dart';
 import '../app/modules/games/views/game_screen.dart';
 import 'settings_screen.dart';
-import 'wallet_screen.dart';
+import '../app/modules/wallet/views/wallet_screen.dart';
 
 class WheelSpinScreen extends StatefulWidget {
   const WheelSpinScreen({super.key});

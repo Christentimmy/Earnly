@@ -2,8 +2,9 @@ import 'package:earnly/app/modules/home/views/home_screen.dart';
 import 'package:earnly/app/resources/colors.dart';
 import 'package:earnly/app/modules/games/views/game_screen.dart';
 import 'package:earnly/screens/settings_screen.dart';
-import 'package:earnly/screens/wallet_screen.dart';
+import 'package:earnly/app/modules/wallet/views/wallet_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 class FloatingBottomNavigationWidget extends StatefulWidget {
@@ -39,7 +40,7 @@ class _FloatingBottomNavigationWidgetState
 
   final List<BottomNavItem> navItems = [
     BottomNavItem(icon: Icons.home, label: ''),
-    BottomNavItem(icon: Icons.videogame_asset_outlined, label: ''),
+    BottomNavItem(icon: FontAwesomeIcons.diceD6, label: ''),
     BottomNavItem(icon: Icons.wallet, label: ''),
     BottomNavItem(icon: Icons.settings_outlined, label: ''),
   ];
@@ -93,6 +94,7 @@ class _FloatingBottomNavigationWidgetState
                         currentIndex.value == navItems.indexOf(item)
                             ? AppColors.primaryColor
                             : Colors.grey,
+                    size: navItems.indexOf(item) == 1 ? 20 : null,
                   ),
                   onPressed: () {
                     currentIndex.value = navItems.indexOf(item);

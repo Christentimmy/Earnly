@@ -1,7 +1,5 @@
+import 'package:earnly/app/resources/colors.dart';
 import 'package:flutter/material.dart';
-import '../app/modules/home/views/home_screen.dart';
-import 'settings_screen.dart';
-import '../app/modules/games/views/game_screen.dart';
 
 class WalletScreen extends StatelessWidget {
   const WalletScreen({super.key});
@@ -9,7 +7,7 @@ class WalletScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF60D07E),
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Stack(
           alignment: Alignment.bottomCenter,
@@ -287,78 +285,6 @@ class WalletScreen extends StatelessWidget {
 
                   const SizedBox(height: 80),
                 ],
-              ),
-            ),
-
-            // 🔹 Floating Bottom Navigation
-            Positioned(
-              bottom: 20,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  height: 55,
-                  width: 280,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(40),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.home_outlined,
-                          color: Colors.black54,
-                          size: 28,
-                        ),
-                        onPressed:
-                            () => Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>  HomeScreen(),
-                              ),
-                            ),
-                      ),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.videogame_asset_outlined,
-                          color: Colors.black54,
-                          size: 28,
-                        ),
-                        onPressed:
-                            () => Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const GameScreen(),
-                              ),
-                            ),
-                      ),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.settings_outlined,
-                          color: Colors.black54,
-                          size: 28,
-                        ),
-                        onPressed:
-                            () => Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const SettingsScreen(),
-                              ),
-                            ),
-                      ),
-                      const Icon(Icons.wallet, color: Colors.black, size: 28),
-                    ],
-                  ),
-                ),
               ),
             ),
           ],
