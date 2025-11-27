@@ -1,4 +1,6 @@
 import 'package:earnly/app/controllers/user_controller.dart';
+import 'package:earnly/app/modules/games/models/game_history_model.dart';
+import 'package:earnly/app/modules/games/widgets/dice_painter.dart';
 import 'package:earnly/app/resources/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -87,6 +89,7 @@ class _DiceGameScreenState extends State<DiceGameScreen>
   }
 
   void rollDice() async {
+    // if (balance < 100) return;
     if (isRolling || stake > balance.value) return;
 
     setState(() {
@@ -282,19 +285,22 @@ class _DiceGameScreenState extends State<DiceGameScreen>
   }
 
   Widget _buildStakeInput() {
+    if (balance.value <= 0) return SizedBox.shrink();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.primaryColor.withOpacity(0.2),
+        color: AppColors.primaryColor.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primaryColor.withOpacity(0.3)),
+        border: Border.all(
+          color: AppColors.primaryColor.withValues(alpha: 0.3),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Stake Amount',
-            style: TextStyle(
+            style: GoogleFonts.poppins(
               color: Colors.white70,
               fontSize: 14,
               fontWeight: FontWeight.w500,
@@ -304,27 +310,28 @@ class _DiceGameScreenState extends State<DiceGameScreen>
           Row(
             children: [
               Expanded(
-                child: Slider(
-                  value: stake,
-                  min: 1,
-                  max: math.min(balance.value, 100),
-                  divisions: 99,
-                  activeColor: AppColors.primaryColor,
-                  inactiveColor: AppColors.primaryColor.withOpacity(0.3),
-                  onChanged:
-                      isRolling
-                          ? null
-                          : (value) {
-                            setState(() {
-                              stake = value;
-                            });
-                          },
+                child: Obx(
+                  () => Slider(
+                    value: stake,
+                    min: 1,
+                    // max: math.min(balance.value, 100),
+                    max: balance.value,
+                    divisions: 99,
+                    activeColor: AppColors.primaryColor,
+                    inactiveColor: Colors.grey.withValues(alpha: 0.3),
+                    onChanged: (value) {
+                      if (isRolling) return;
+                      setState(() {
+                        stake = value;
+                      });
+                    },
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
               Text(
-                '\$${stake.toStringAsFixed(2)}',
-                style: const TextStyle(
+                stake.toStringAsFixed(2),
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -667,144 +674,4 @@ class _DiceGameScreenState extends State<DiceGameScreen>
   }
 }
 
-class DicePainter extends CustomPainter {
-  final int number;
 
-  DicePainter(this.number);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = Colors.black
-          ..style = PaintingStyle.fill;
-
-    final center = Offset(size.width / 2, size.height / 2);
-    final dotRadius = size.width * 0.08;
-
-    switch (number) {
-      case 1:
-        canvas.drawCircle(center, dotRadius, paint);
-        break;
-      case 2:
-        canvas.drawCircle(
-          Offset(size.width * 0.3, size.height * 0.3),
-          dotRadius,
-          paint,
-        );
-        canvas.drawCircle(
-          Offset(size.width * 0.7, size.height * 0.7),
-          dotRadius,
-          paint,
-        );
-        break;
-      case 3:
-        canvas.drawCircle(
-          Offset(size.width * 0.3, size.height * 0.3),
-          dotRadius,
-          paint,
-        );
-        canvas.drawCircle(center, dotRadius, paint);
-        canvas.drawCircle(
-          Offset(size.width * 0.7, size.height * 0.7),
-          dotRadius,
-          paint,
-        );
-        break;
-      case 4:
-        canvas.drawCircle(
-          Offset(size.width * 0.3, size.height * 0.3),
-          dotRadius,
-          paint,
-        );
-        canvas.drawCircle(
-          Offset(size.width * 0.7, size.height * 0.3),
-          dotRadius,
-          paint,
-        );
-        canvas.drawCircle(
-          Offset(size.width * 0.3, size.height * 0.7),
-          dotRadius,
-          paint,
-        );
-        canvas.drawCircle(
-          Offset(size.width * 0.7, size.height * 0.7),
-          dotRadius,
-          paint,
-        );
-        break;
-      case 5:
-        canvas.drawCircle(
-          Offset(size.width * 0.3, size.height * 0.3),
-          dotRadius,
-          paint,
-        );
-        canvas.drawCircle(
-          Offset(size.width * 0.7, size.height * 0.3),
-          dotRadius,
-          paint,
-        );
-        canvas.drawCircle(center, dotRadius, paint);
-        canvas.drawCircle(
-          Offset(size.width * 0.3, size.height * 0.7),
-          dotRadius,
-          paint,
-        );
-        canvas.drawCircle(
-          Offset(size.width * 0.7, size.height * 0.7),
-          dotRadius,
-          paint,
-        );
-        break;
-      case 6:
-        canvas.drawCircle(
-          Offset(size.width * 0.3, size.height * 0.25),
-          dotRadius,
-          paint,
-        );
-        canvas.drawCircle(
-          Offset(size.width * 0.7, size.height * 0.25),
-          dotRadius,
-          paint,
-        );
-        canvas.drawCircle(
-          Offset(size.width * 0.3, size.height * 0.5),
-          dotRadius,
-          paint,
-        );
-        canvas.drawCircle(
-          Offset(size.width * 0.7, size.height * 0.5),
-          dotRadius,
-          paint,
-        );
-        canvas.drawCircle(
-          Offset(size.width * 0.3, size.height * 0.75),
-          dotRadius,
-          paint,
-        );
-        canvas.drawCircle(
-          Offset(size.width * 0.7, size.height * 0.75),
-          dotRadius,
-          paint,
-        );
-        break;
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
-
-class GameHistory {
-  final double stake;
-  final int result;
-  final bool won;
-  final double payout;
-
-  GameHistory({
-    required this.stake,
-    required this.result,
-    required this.won,
-    required this.payout,
-  });
-}
