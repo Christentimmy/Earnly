@@ -1,142 +1,17 @@
-import 'package:earnly/app/controllers/user_controller.dart';
+import 'package:earnly/app/modules/games/controllers/dice_game_controller.dart';
 import 'package:earnly/app/modules/games/models/game_history_model.dart';
 import 'package:earnly/app/modules/games/widgets/dice_painter.dart';
 import 'package:earnly/app/resources/colors.dart';
+import 'package:earnly/app/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:math' as math;
 
 import 'package:google_fonts/google_fonts.dart';
 
-class DiceGameScreen extends StatefulWidget {
-  const DiceGameScreen({super.key});
+class DiceGameScreen extends StatelessWidget {
+  DiceGameScreen({super.key});
 
-  @override
-  State<DiceGameScreen> createState() => _DiceGameScreenState();
-}
-
-class _DiceGameScreenState extends State<DiceGameScreen>
-    with TickerProviderStateMixin {
-  RxDouble balance = 0.0.obs;
-  double stake = 10.0;
-  int predictedNumber = 4;
-  bool isOver = true;
-  bool isRolling = false;
-  int? rolledNumber;
-  bool? lastWin;
-
-  late AnimationController _diceController;
-  late AnimationController _resultController;
-  late Animation<double> _diceRotation;
-  late Animation<double> _diceScale;
-  late Animation<double> _resultScale;
-
-  List<GameHistory> history = [];
-  final userController = Get.find<UserController>();
-
-  @override
-  void initState() {
-    super.initState();
-    balance.value = userController.userModel.value?.credits?.toDouble() ?? 0.0;
-    _diceController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    );
-
-    _resultController = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-
-    _diceRotation = Tween<double>(begin: 0, end: 8 * math.pi).animate(
-      CurvedAnimation(parent: _diceController, curve: Curves.easeOutCubic),
-    );
-
-    _diceScale = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.3), weight: 30),
-      TweenSequenceItem(tween: Tween(begin: 1.3, end: 0.9), weight: 40),
-      TweenSequenceItem(tween: Tween(begin: 0.9, end: 1.0), weight: 30),
-    ]).animate(
-      CurvedAnimation(parent: _diceController, curve: Curves.easeInOut),
-    );
-
-    _resultScale = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _resultController, curve: Curves.elasticOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _diceController.dispose();
-    _resultController.dispose();
-    super.dispose();
-  }
-
-  double get winChance {
-    if (isOver) {
-      return ((6 - predictedNumber) / 6) * 100;
-    } else {
-      return (predictedNumber / 6) * 100;
-    }
-  }
-
-  double get multiplier {
-    return 100 / winChance;
-  }
-
-  double get potentialWin {
-    return stake * multiplier;
-  }
-
-  void rollDice() async {
-    // if (balance < 100) return;
-    if (isRolling || stake > balance.value) return;
-
-    setState(() {
-      isRolling = true;
-      lastWin = null;
-      rolledNumber = null;
-    });
-
-    _diceController.forward(from: 0);
-
-    await Future.delayed(const Duration(milliseconds: 1200));
-
-    final random = math.Random();
-    final result = random.nextInt(6) + 1;
-
-    bool won = isOver ? result > predictedNumber : result < predictedNumber;
-
-    setState(() {
-      rolledNumber = result;
-      lastWin = won;
-      balance.value =
-          won ? balance.value + (potentialWin - stake) : balance.value - stake;
-
-      history.insert(
-        0,
-        GameHistory(
-          stake: stake,
-          result: result,
-          won: won,
-          payout: won ? potentialWin : 0,
-        ),
-      );
-
-      if (history.length > 10) history.removeLast();
-    });
-
-    await Future.delayed(const Duration(milliseconds: 300));
-    _resultController.forward(from: 0);
-
-    await Future.delayed(const Duration(milliseconds: 2000));
-
-    setState(() {
-      isRolling = false;
-    });
-    await Future.delayed(const Duration(milliseconds: 500));
-    _resultController.reset();
-  }
+  final diceGameController = Get.put(DiceGameController());
 
   @override
   Widget build(BuildContext context) {
@@ -198,12 +73,14 @@ class _DiceGameScreenState extends State<DiceGameScreen>
               color: AppColors.primaryColor,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Text(
-              balance.toStringAsFixed(2),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+            child: Obx(
+              () => Text(
+                diceGameController.balance.value.toStringAsFixed(2),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -219,23 +96,29 @@ class _DiceGameScreenState extends State<DiceGameScreen>
         alignment: Alignment.center,
         children: [
           AnimatedBuilder(
-            animation: _diceController,
+            animation: diceGameController.diceController,
             builder: (context, child) {
               return Transform.scale(
-                scale: _diceScale.value,
+                scale: diceGameController.diceScale.value,
                 child: Transform.rotate(
-                  angle: _diceRotation.value,
-                  child: _buildDice(rolledNumber ?? 1),
+                  angle: diceGameController.diceRotation.value,
+                  child: Obx(
+                    () =>
+                        _buildDice(diceGameController.rolledNumber.value ?? 1),
+                  ),
                 ),
               );
             },
           ),
-          if (lastWin != null)
-            AnimatedBuilder(
-              animation: _resultController,
+          Obx(() {
+            if (diceGameController.lastWin.value == null) {
+              return SizedBox.shrink();
+            }
+            return AnimatedBuilder(
+              animation: diceGameController.resultController,
               builder: (context, child) {
                 return Transform.scale(
-                  scale: _resultScale.value,
+                  scale: diceGameController.resultScale.value,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
@@ -243,14 +126,16 @@ class _DiceGameScreenState extends State<DiceGameScreen>
                     ),
                     decoration: BoxDecoration(
                       color:
-                          lastWin!
-                              ? Colors.green.withOpacity(0.9)
-                              : Colors.red.withOpacity(0.9),
+                          diceGameController.lastWin.value == true
+                              ? Colors.green.withValues(alpha: 0.9)
+                              : Colors.red.withValues(alpha: 0.9),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      lastWin! ? '🎉 WIN!' : '❌ LOSE',
-                      style: const TextStyle(
+                      diceGameController.lastWin.value == true
+                          ? '🎉 WIN!'
+                          : '❌ LOSE',
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -259,7 +144,8 @@ class _DiceGameScreenState extends State<DiceGameScreen>
                   ),
                 );
               },
-            ),
+            );
+          }),
         ],
       ),
     );
@@ -285,63 +171,76 @@ class _DiceGameScreenState extends State<DiceGameScreen>
   }
 
   Widget _buildStakeInput() {
-    if (balance.value <= 0) return SizedBox.shrink();
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppColors.primaryColor.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.primaryColor.withValues(alpha: 0.3),
+    return Obx(() {
+      if (diceGameController.balance.value <= 0) return SizedBox.shrink();
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        decoration: BoxDecoration(
+          color: AppColors.primaryColor.withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: AppColors.primaryColor.withValues(alpha: 0.3),
+          ),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Stake Amount',
-            style: GoogleFonts.poppins(
-              color: Colors.white70,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Stake Amount',
+              style: GoogleFonts.poppins(
+                color: Colors.white70,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              Expanded(
-                child: Obx(
-                  () => Slider(
-                    value: stake,
-                    min: 1,
-                    // max: math.min(balance.value, 100),
-                    max: balance.value,
-                    divisions: 99,
-                    activeColor: AppColors.primaryColor,
-                    inactiveColor: Colors.grey.withValues(alpha: 0.3),
-                    onChanged: (value) {
-                      if (isRolling) return;
-                      setState(() {
-                        stake = value;
+            const SizedBox(height: 5),
+            Row(
+              children: [
+                Expanded(
+                  child: // In _buildStakeInput method
+                      Obx(() {
+                    final balance = diceGameController.balance.value;
+                    final maxStake = balance > 0 ? balance : 1.0;
+                    final currentStake = diceGameController.stake.value;
+
+                    // Ensure stake is within bounds
+                    if (currentStake > maxStake) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        diceGameController.stake.value = maxStake;
                       });
-                    },
-                  ),
+                    }
+
+                    return Slider(
+                      value: currentStake.clamp(1.0, maxStake),
+                      min: 1.0,
+                      max: maxStake,
+                      divisions: (maxStake - 1).toInt(),
+                      activeColor: AppColors.primaryColor,
+                      inactiveColor: Colors.grey.withOpacity(0.3),
+                      onChanged: (value) {
+                        if (diceGameController.isRolling.value) return;
+                        diceGameController.stake.value = value;
+                      },
+                    );
+                  }),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                stake.toStringAsFixed(2),
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+                const SizedBox(width: 12),
+                Obx(() {
+                  return Text(
+                    diceGameController.stake.value.toStringAsFixed(2),
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildPredictionSelector() {
@@ -358,118 +257,115 @@ class _DiceGameScreenState extends State<DiceGameScreen>
           Row(
             children: [
               Expanded(
-                child: GestureDetector(
-                  onTap:
-                      isRolling
-                          ? null
-                          : () {
-                            setState(() {
-                              isOver = true;
-                            });
-                          },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color:
-                          isOver
-                              ? AppColors.primaryColor
-                              : AppColors.primaryColor.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    alignment: Alignment.center,
-                    child: const Text(
-                      'OVER',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                child: Obx(() {
+                  return GestureDetector(
+                    onTap: () {
+                      if (diceGameController.isRolling.value) return;
+                      diceGameController.isOver.value = true;
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color:
+                            diceGameController.isOver.value
+                                ? AppColors.primaryColor
+                                : AppColors.primaryColor.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      alignment: Alignment.center,
+                      child: const Text(
+                        'OVER',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                }),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: GestureDetector(
-                  onTap:
-                      isRolling
-                          ? null
-                          : () {
-                            setState(() {
-                              isOver = false;
-                            });
-                          },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color:
-                          !isOver
-                              ? AppColors.primaryColor
-                              : AppColors.primaryColor.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    alignment: Alignment.center,
-                    child: const Text(
-                      'UNDER',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                child: Obx(() {
+                  return GestureDetector(
+                    onTap: () {
+                      if (diceGameController.isRolling.value) return;
+                      diceGameController.isOver.value = false;
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color:
+                            !diceGameController.isOver.value
+                                ? AppColors.primaryColor
+                                : AppColors.primaryColor.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      alignment: Alignment.center,
+                      child: const Text(
+                        'UNDER',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                }),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          Text(
-            'Predict ${isOver ? 'Over' : 'Under'}',
-            style: const TextStyle(color: Colors.white70, fontSize: 14),
-          ),
+          Obx(() {
+            return Text(
+              'Predict ${diceGameController.isOver.value ? 'Over' : 'Under'}',
+              style: const TextStyle(color: Colors.white70, fontSize: 14),
+            );
+          }),
           const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(6, (index) {
-              final number = index + 1;
-              final isSelected = predictedNumber == number;
-              return GestureDetector(
-                onTap:
-                    isRolling
-                        ? null
-                        : () {
-                          setState(() {
-                            predictedNumber = number;
-                          });
-                        },
-                child: Container(
-                  width: 45,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color:
-                        isSelected
-                            ? AppColors.primaryColor
-                            : Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
+          Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List.generate(6, (index) {
+                final number = index + 1;
+                final isSelected =
+                    diceGameController.predictedNumber.value == number;
+                return GestureDetector(
+                  onTap: () {
+                    if (diceGameController.isRolling.value) return;
+                    diceGameController.predictedNumber.value = number;
+                  },
+                  child: Container(
+                    width: 45,
+                    height: 45,
+                    decoration: BoxDecoration(
                       color:
                           isSelected
-                              ? Colors.white
-                              : AppColors.primaryColor.withOpacity(0.3),
-                      width: 2,
+                              ? AppColors.primaryColor
+                              : Colors.white.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color:
+                            isSelected
+                                ? Colors.white
+                                : AppColors.primaryColor.withValues(alpha: 0.3),
+                        width: 2,
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '$number',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.normal,
+                      ),
                     ),
                   ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    '$number',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  ),
-                ),
-              );
-            }),
+                );
+              }),
+            ),
           ),
         ],
       ),
@@ -484,37 +380,39 @@ class _DiceGameScreenState extends State<DiceGameScreen>
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.primaryColor.withOpacity(0.3)),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: _buildStatItem(
-              'Win Chance',
-              '${winChance.toStringAsFixed(1)}%',
+      child: Obx(
+        () => Row(
+          children: [
+            Expanded(
+              child: _buildStatItem(
+                'Win Chance',
+                '${diceGameController.winChance.value.toStringAsFixed(1)}%',
+              ),
             ),
-          ),
-          Container(
-            width: 1,
-            height: 40,
-            color: AppColors.primaryColor.withOpacity(0.3),
-          ),
-          Expanded(
-            child: _buildStatItem(
-              'Multiplier',
-              '${multiplier.toStringAsFixed(2)}x',
+            Container(
+              width: 1,
+              height: 40,
+              color: AppColors.primaryColor.withValues(alpha: 0.3),
             ),
-          ),
-          Container(
-            width: 1,
-            height: 40,
-            color: AppColors.primaryColor.withOpacity(0.3),
-          ),
-          Expanded(
-            child: _buildStatItem(
-              'Potential Win',
-              '\$${potentialWin.toStringAsFixed(2)}',
+            Expanded(
+              child: _buildStatItem(
+                'Multiplier',
+                '${diceGameController.multiplier.value.toStringAsFixed(2)}x',
+              ),
             ),
-          ),
-        ],
+            Container(
+              width: 1,
+              height: 40,
+              color: AppColors.primaryColor.withOpacity(0.3),
+            ),
+            Expanded(
+              child: _buildStatItem(
+                'Potential Win',
+                '\$${diceGameController.potentialWin.value.toStringAsFixed(2)}',
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -540,38 +438,17 @@ class _DiceGameScreenState extends State<DiceGameScreen>
   }
 
   Widget _buildRollButton() {
-    final canRoll = !isRolling && stake <= balance.value;
-    return GestureDetector(
-      onTap: canRoll ? rollDice : null,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 18),
-        decoration: BoxDecoration(
-          gradient:
-              canRoll
-                  ? LinearGradient(
-                    colors: [
-                      AppColors.primaryColor,
-                      AppColors.primaryColor.withGreen(100),
-                    ],
-                  )
-                  : null,
-          color: canRoll ? null : Colors.grey,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow:
-              canRoll
-                  ? [
-                    BoxShadow(
-                      color: AppColors.primaryColor.withOpacity(0.5),
-                      blurRadius: 20,
-                      spreadRadius: 2,
-                    ),
-                  ]
-                  : null,
-        ),
-        alignment: Alignment.center,
+    return Obx(() {
+      // final isRolling = diceGameController.isRolling.value;
+      final stake = diceGameController.stake.value;
+      final balance = diceGameController.balance.value;
+      final canRoll = !diceGameController.isRolling.value && stake <= balance;
+      return CustomButton(
+        ontap: canRoll ? diceGameController.rollDice : () {},
+        isLoading: diceGameController.isRolling,
+        bgColor: canRoll ? AppColors.primaryColor : Colors.grey,
         child: Text(
-          isRolling ? 'ROLLING...' : 'ROLL DICE',
+          'ROLL DICE',
           style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -579,28 +456,30 @@ class _DiceGameScreenState extends State<DiceGameScreen>
             letterSpacing: 1.5,
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildHistory() {
-    if (history.isEmpty) return const SizedBox.shrink();
+    return Obx(() {
+      if (diceGameController.history.isEmpty) return const SizedBox.shrink();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Recent Rolls',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Recent Rolls',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
-        ...history.map((game) => _buildHistoryItem(game)).toList(),
-      ],
-    );
+          const SizedBox(height: 12),
+          ...diceGameController.history.take(10).map((game) => _buildHistoryItem(game)),
+        ],
+      );
+    });
   }
 
   Widget _buildHistoryItem(GameHistory game) {
@@ -673,5 +552,3 @@ class _DiceGameScreenState extends State<DiceGameScreen>
     );
   }
 }
-
-

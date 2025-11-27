@@ -15,13 +15,49 @@ class EarnController extends GetxController {
     getWheelSpinRewards();
   }
 
+  Future<void> dice({
+    required double stake,
+    required double balance,
+    required bool win,
+    required double amount,
+  }) async {
+    try {
+      final storageController = Get.find<StorageController>();
+      final token = await storageController.getToken();
+      if (token == null) return;
+
+      final response = await earnService.dice(
+        token: token,
+        stake: stake,
+        balance: balance,
+        win: win,
+        amount: amount,
+      );
+      if (response == null) return;
+
+      final decoded = json.decode(response.body);
+      final message = decoded["message"];
+
+      if (response.statusCode != 200) {
+        debugPrint(message);
+        return;
+      }
+      // await Get.find<UserController>().getUserDetails();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   Future<void> claimWheelSpin({required int reward}) async {
     try {
       final storageController = Get.find<StorageController>();
       final token = await storageController.getToken();
       if (token == null) return;
 
-      final response = await earnService.claimWheelSpin(token: token, reward: reward);
+      final response = await earnService.claimWheelSpin(
+        token: token,
+        reward: reward,
+      );
       if (response == null) return;
 
       final decoded = json.decode(response.body);
