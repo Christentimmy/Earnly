@@ -1,10 +1,10 @@
+import 'package:earnly/app/controllers/user_controller.dart';
+import 'package:earnly/app/resources/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'dart:math' as math;
 
-class AppColors {
-  static const Color primaryColor = Color.fromARGB(255, 32, 70, 39);
-  static const Color backgroundColor = Color(0xFF0A1A0C);
-}
+import 'package:google_fonts/google_fonts.dart';
 
 class DiceGameScreen extends StatefulWidget {
   const DiceGameScreen({super.key});
@@ -15,7 +15,7 @@ class DiceGameScreen extends StatefulWidget {
 
 class _DiceGameScreenState extends State<DiceGameScreen>
     with TickerProviderStateMixin {
-  double balance = 1000.0;
+  RxDouble balance = 0.0.obs;
   double stake = 10.0;
   int predictedNumber = 4;
   bool isOver = true;
@@ -30,10 +30,12 @@ class _DiceGameScreenState extends State<DiceGameScreen>
   late Animation<double> _resultScale;
 
   List<GameHistory> history = [];
+  final userController = Get.find<UserController>();
 
   @override
   void initState() {
     super.initState();
+    balance.value = userController.userModel.value?.credits?.toDouble() ?? 0.0;
     _diceController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
@@ -52,7 +54,9 @@ class _DiceGameScreenState extends State<DiceGameScreen>
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.3), weight: 30),
       TweenSequenceItem(tween: Tween(begin: 1.3, end: 0.9), weight: 40),
       TweenSequenceItem(tween: Tween(begin: 0.9, end: 1.0), weight: 30),
-    ]).animate(CurvedAnimation(parent: _diceController, curve: Curves.easeInOut));
+    ]).animate(
+      CurvedAnimation(parent: _diceController, curve: Curves.easeInOut),
+    );
 
     _resultScale = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _resultController, curve: Curves.elasticOut),
@@ -83,7 +87,7 @@ class _DiceGameScreenState extends State<DiceGameScreen>
   }
 
   void rollDice() async {
-    if (isRolling || stake > balance) return;
+    if (isRolling || stake > balance.value) return;
 
     setState(() {
       isRolling = true;
@@ -103,15 +107,19 @@ class _DiceGameScreenState extends State<DiceGameScreen>
     setState(() {
       rolledNumber = result;
       lastWin = won;
-      balance = won ? balance + (potentialWin - stake) : balance - stake;
-      
-      history.insert(0, GameHistory(
-        stake: stake,
-        result: result,
-        won: won,
-        payout: won ? potentialWin : 0,
-      ));
-      
+      balance.value =
+          won ? balance.value + (potentialWin - stake) : balance.value - stake;
+
+      history.insert(
+        0,
+        GameHistory(
+          stake: stake,
+          result: result,
+          won: won,
+          payout: won ? potentialWin : 0,
+        ),
+      );
+
       if (history.length > 10) history.removeLast();
     });
 
@@ -123,6 +131,8 @@ class _DiceGameScreenState extends State<DiceGameScreen>
     setState(() {
       isRolling = false;
     });
+    await Future.delayed(const Duration(milliseconds: 500));
+    _resultController.reset();
   }
 
   @override
@@ -139,7 +149,7 @@ class _DiceGameScreenState extends State<DiceGameScreen>
                 child: Column(
                   children: [
                     _buildDiceArea(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 10),
                     _buildStakeInput(),
                     const SizedBox(height: 20),
                     _buildPredictionSelector(),
@@ -147,7 +157,7 @@ class _DiceGameScreenState extends State<DiceGameScreen>
                     _buildStatsCard(),
                     const SizedBox(height: 20),
                     _buildRollButton(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 20),
                     _buildHistory(),
                   ],
                 ),
@@ -171,12 +181,12 @@ class _DiceGameScreenState extends State<DiceGameScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
+          Text(
             '🎲 Dice Game',
-            style: TextStyle(
+            style: GoogleFonts.poppins(
               color: Colors.white,
               fontSize: 24,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w500,
             ),
           ),
           Container(
@@ -186,7 +196,7 @@ class _DiceGameScreenState extends State<DiceGameScreen>
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              '\$${balance.toStringAsFixed(2)}',
+              balance.toStringAsFixed(2),
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -200,8 +210,8 @@ class _DiceGameScreenState extends State<DiceGameScreen>
   }
 
   Widget _buildDiceArea() {
-    return Container(
-      height: 200,
+    return SizedBox(
+      height: Get.height * 0.17,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -229,9 +239,10 @@ class _DiceGameScreenState extends State<DiceGameScreen>
                       vertical: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: lastWin!
-                          ? Colors.green.withOpacity(0.9)
-                          : Colors.red.withOpacity(0.9),
+                      color:
+                          lastWin!
+                              ? Colors.green.withOpacity(0.9)
+                              : Colors.red.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -266,15 +277,13 @@ class _DiceGameScreenState extends State<DiceGameScreen>
           ),
         ],
       ),
-      child: CustomPaint(
-        painter: DicePainter(number),
-      ),
+      child: CustomPaint(painter: DicePainter(number)),
     );
   }
 
   Widget _buildStakeInput() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
         color: AppColors.primaryColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
@@ -291,24 +300,25 @@ class _DiceGameScreenState extends State<DiceGameScreen>
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 5),
           Row(
             children: [
               Expanded(
                 child: Slider(
                   value: stake,
                   min: 1,
-                  max: math.min(balance, 100),
+                  max: math.min(balance.value, 100),
                   divisions: 99,
                   activeColor: AppColors.primaryColor,
                   inactiveColor: AppColors.primaryColor.withOpacity(0.3),
-                  onChanged: isRolling
-                      ? null
-                      : (value) {
-                          setState(() {
-                            stake = value;
-                          });
-                        },
+                  onChanged:
+                      isRolling
+                          ? null
+                          : (value) {
+                            setState(() {
+                              stake = value;
+                            });
+                          },
                 ),
               ),
               const SizedBox(width: 12),
@@ -342,19 +352,21 @@ class _DiceGameScreenState extends State<DiceGameScreen>
             children: [
               Expanded(
                 child: GestureDetector(
-                  onTap: isRolling
-                      ? null
-                      : () {
-                          setState(() {
-                            isOver = true;
-                          });
-                        },
+                  onTap:
+                      isRolling
+                          ? null
+                          : () {
+                            setState(() {
+                              isOver = true;
+                            });
+                          },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
-                      color: isOver
-                          ? AppColors.primaryColor
-                          : AppColors.primaryColor.withOpacity(0.3),
+                      color:
+                          isOver
+                              ? AppColors.primaryColor
+                              : AppColors.primaryColor.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     alignment: Alignment.center,
@@ -371,19 +383,21 @@ class _DiceGameScreenState extends State<DiceGameScreen>
               const SizedBox(width: 12),
               Expanded(
                 child: GestureDetector(
-                  onTap: isRolling
-                      ? null
-                      : () {
-                          setState(() {
-                            isOver = false;
-                          });
-                        },
+                  onTap:
+                      isRolling
+                          ? null
+                          : () {
+                            setState(() {
+                              isOver = false;
+                            });
+                          },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
-                      color: !isOver
-                          ? AppColors.primaryColor
-                          : AppColors.primaryColor.withOpacity(0.3),
+                      color:
+                          !isOver
+                              ? AppColors.primaryColor
+                              : AppColors.primaryColor.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     alignment: Alignment.center,
@@ -402,10 +416,7 @@ class _DiceGameScreenState extends State<DiceGameScreen>
           const SizedBox(height: 16),
           Text(
             'Predict ${isOver ? 'Over' : 'Under'}',
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 14,
-            ),
+            style: const TextStyle(color: Colors.white70, fontSize: 14),
           ),
           const SizedBox(height: 8),
           Row(
@@ -414,25 +425,28 @@ class _DiceGameScreenState extends State<DiceGameScreen>
               final number = index + 1;
               final isSelected = predictedNumber == number;
               return GestureDetector(
-                onTap: isRolling
-                    ? null
-                    : () {
-                        setState(() {
-                          predictedNumber = number;
-                        });
-                      },
+                onTap:
+                    isRolling
+                        ? null
+                        : () {
+                          setState(() {
+                            predictedNumber = number;
+                          });
+                        },
                 child: Container(
                   width: 45,
                   height: 45,
                   decoration: BoxDecoration(
-                    color: isSelected
-                        ? AppColors.primaryColor
-                        : Colors.white.withOpacity(0.1),
+                    color:
+                        isSelected
+                            ? AppColors.primaryColor
+                            : Colors.white.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: isSelected
-                          ? Colors.white
-                          : AppColors.primaryColor.withOpacity(0.3),
+                      color:
+                          isSelected
+                              ? Colors.white
+                              : AppColors.primaryColor.withOpacity(0.3),
                       width: 2,
                     ),
                   ),
@@ -503,10 +517,7 @@ class _DiceGameScreenState extends State<DiceGameScreen>
       children: [
         Text(
           label,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 12,
-          ),
+          style: const TextStyle(color: Colors.white70, fontSize: 12),
         ),
         const SizedBox(height: 4),
         Text(
@@ -522,32 +533,34 @@ class _DiceGameScreenState extends State<DiceGameScreen>
   }
 
   Widget _buildRollButton() {
-    final canRoll = !isRolling && stake <= balance;
+    final canRoll = !isRolling && stake <= balance.value;
     return GestureDetector(
       onTap: canRoll ? rollDice : null,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 18),
         decoration: BoxDecoration(
-          gradient: canRoll
-              ? LinearGradient(
-                  colors: [
-                    AppColors.primaryColor,
-                    AppColors.primaryColor.withGreen(100),
-                  ],
-                )
-              : null,
+          gradient:
+              canRoll
+                  ? LinearGradient(
+                    colors: [
+                      AppColors.primaryColor,
+                      AppColors.primaryColor.withGreen(100),
+                    ],
+                  )
+                  : null,
           color: canRoll ? null : Colors.grey,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: canRoll
-              ? [
-                  BoxShadow(
-                    color: AppColors.primaryColor.withOpacity(0.5),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                  ),
-                ]
-              : null,
+          boxShadow:
+              canRoll
+                  ? [
+                    BoxShadow(
+                      color: AppColors.primaryColor.withOpacity(0.5),
+                      blurRadius: 20,
+                      spreadRadius: 2,
+                    ),
+                  ]
+                  : null,
         ),
         alignment: Alignment.center,
         child: Text(
@@ -591,7 +604,10 @@ class _DiceGameScreenState extends State<DiceGameScreen>
         color: AppColors.primaryColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: game.won ? Colors.green.withOpacity(0.3) : Colors.red.withOpacity(0.3),
+          color:
+              game.won
+                  ? Colors.green.withOpacity(0.3)
+                  : Colors.red.withOpacity(0.3),
         ),
       ),
       child: Row(
@@ -600,7 +616,10 @@ class _DiceGameScreenState extends State<DiceGameScreen>
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: game.won ? Colors.green.withOpacity(0.2) : Colors.red.withOpacity(0.2),
+              color:
+                  game.won
+                      ? Colors.green.withOpacity(0.2)
+                      : Colors.red.withOpacity(0.2),
               borderRadius: BorderRadius.circular(8),
             ),
             alignment: Alignment.center,
@@ -627,16 +646,15 @@ class _DiceGameScreenState extends State<DiceGameScreen>
                 ),
                 Text(
                   'Stake: \$${game.stake.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 12,
-                  ),
+                  style: const TextStyle(color: Colors.white70, fontSize: 12),
                 ),
               ],
             ),
           ),
           Text(
-            game.won ? '+\$${(game.payout - game.stake).toStringAsFixed(2)}' : '-\$${game.stake.toStringAsFixed(2)}',
+            game.won
+                ? '+\$${(game.payout - game.stake).toStringAsFixed(2)}'
+                : '-\$${game.stake.toStringAsFixed(2)}',
             style: TextStyle(
               color: game.won ? Colors.green : Colors.red,
               fontWeight: FontWeight.bold,
@@ -656,9 +674,10 @@ class DicePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = Colors.black
+          ..style = PaintingStyle.fill;
 
     final center = Offset(size.width / 2, size.height / 2);
     final dotRadius = size.width * 0.08;
