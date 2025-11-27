@@ -6,7 +6,7 @@ import 'invite_friend_screen.dart';
 import 'about_app_screen.dart';
 import '../app/modules/home/views/home_screen.dart';
 import 'wallet_screen.dart';
-import 'game_screen.dart';
+import '../app/modules/games/views/game_screen.dart';
 import 'login_screen.dart';
 
 class SettingsScreen extends StatelessWidget {

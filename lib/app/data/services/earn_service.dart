@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class EarnService {
-  
+
   Future<http.Response?> claimWheelSpin({
     required String token,
     required int reward,
   }) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/earn/wheel-spin'),
+        Uri.parse('$baseUrl/earn/claim-wheel-spin'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

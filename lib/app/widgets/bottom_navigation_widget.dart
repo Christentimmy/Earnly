@@ -1,6 +1,6 @@
 import 'package:earnly/app/modules/home/views/home_screen.dart';
 import 'package:earnly/app/resources/colors.dart';
-import 'package:earnly/screens/game_screen.dart';
+import 'package:earnly/app/modules/games/views/game_screen.dart';
 import 'package:earnly/screens/settings_screen.dart';
 import 'package:earnly/screens/wallet_screen.dart';
 import 'package:flutter/material.dart';

@@ -11,7 +11,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color.fromARGB(255, 26, 71, 38),
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Stack(

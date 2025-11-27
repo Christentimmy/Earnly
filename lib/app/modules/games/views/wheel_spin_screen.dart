@@ -177,8 +177,8 @@ class WheelSpinScreen extends StatelessWidget {
                   return SizedBox.shrink();
                 }
                 return CustomButton(
-                  ontap: () {
-                    wheelSpinController.spinWheel();
+                  ontap: () async {
+                  await  wheelSpinController.spinWheel();
                   },
                   isLoading: false.obs,
                   child: Text(

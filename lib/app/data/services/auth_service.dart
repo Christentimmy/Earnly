@@ -115,8 +115,8 @@ class AuthService {
           )
           .timeout(const Duration(seconds: 30));
       return response;
-    } on SocketException {
-      CustomSnackbar.showErrorToast("No internet connection");
+    } on SocketException catch (e) {
+      debugPrint(e.toString());
     } on TimeoutException {
       CustomSnackbar.showErrorToast("Request timeout, please try again");
     } catch (e) {

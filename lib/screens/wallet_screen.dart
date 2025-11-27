@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../app/modules/home/views/home_screen.dart';
 import 'settings_screen.dart';
-import 'game_screen.dart';
+import '../app/modules/games/views/game_screen.dart';
 
 class WalletScreen extends StatelessWidget {
   const WalletScreen({super.key});

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:earnly/app/controllers/earn_controller.dart';
+import 'package:earnly/app/controllers/user_controller.dart';
 import 'package:earnly/app/modules/games/widgets/reward_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,11 +14,12 @@ class WheelSpinController extends GetxController
   final hasSpunToday = false.obs;
   final lastReward = 0.obs;
   final earnController = Get.find<EarnController>();
+  final userController = Get.find<UserController>();
 
   final RxList<int> rewards = <int>[].obs;
   final List<Color> segmentColors = [
-    const Color.fromARGB(255, 32, 70, 39),  // Primary green
-    const Color.fromARGB(255, 52, 90, 59),  // Lighter shade of primary green
+    const Color.fromARGB(255, 32, 70, 39), // Primary green
+    const Color.fromARGB(255, 52, 90, 59), // Lighter shade of primary green
     const Color.fromARGB(255, 32, 70, 39),
     const Color.fromARGB(255, 52, 90, 59),
     const Color.fromARGB(255, 32, 70, 39),
@@ -50,10 +52,11 @@ class WheelSpinController extends GetxController
   }
 
   void checkIfSpunToday() {
-    hasSpunToday.value = false;
+    final userModel = userController.userModel.value;
+    hasSpunToday.value = userModel?.hasSpunToday ?? false;
   }
 
-  void spinWheel() {
+  Future<void> spinWheel() async {
     if (isSpinning.value || hasSpunToday.value) return;
     isSpinning.value = true;
 
@@ -76,11 +79,12 @@ class WheelSpinController extends GetxController
       end: totalRotation,
     ).animate(CurvedAnimation(parent: controller, curve: Curves.easeOutCubic));
 
-    controller.forward(from: 0).then((_) {
+    controller.forward(from: 0).then((_) async {
       isSpinning.value = false;
       hasSpunToday.value = true;
       lastReward.value = reward;
       _showRewardPopup(reward);
+      await earnController.claimWheelSpin(reward: reward);
       controller.reset();
     });
   }
