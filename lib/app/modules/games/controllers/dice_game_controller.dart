@@ -103,11 +103,10 @@ class DiceGameController extends GetxController
 
     rolledNumber.value = result;
     lastWin.value = won;
-    final amount =
+    balance.value =
         won
             ? balance.value + (potentialWin.value - stake.value)
             : balance.value - stake.value;
-    balance.value = amount;
 
     history.insert(
       0,
@@ -132,7 +131,7 @@ class DiceGameController extends GetxController
       stake: stake.value,
       balance: balance.value,
       win: won,
-      amount: amount,
+      amount: won ? potentialWin.value - stake.value : stake.value,
     );
   }
 

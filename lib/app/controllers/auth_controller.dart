@@ -133,14 +133,15 @@ class AuthController extends GetxController {
   Future<void> validateToken({required String token}) async {
     try {
       final response = await authService.validateToken(token: token);
+
       if (response == null) {
         Get.offAllNamed(AppRoutes.welcomeScreen);
         return;
       }
       final decoded = json.decode(response.body);
-      String message = decoded["message"];
-      String email = decoded["email"];
-      if (response.statusCode == 405) {
+      String message = decoded["message"] ?? "";
+      String email = decoded["email"] ?? "";
+      if (response.statusCode == 405 && email.isNotEmpty) {
         Get.offAllNamed(
           AppRoutes.otpScreen,
           arguments: {
@@ -151,7 +152,7 @@ class AuthController extends GetxController {
         return;
       }
       if (response.statusCode != 200) {
-        CustomSnackbar.showErrorToast(message);
+        debugPrint(message);
         Get.offAllNamed(AppRoutes.welcomeScreen);
         return;
       }

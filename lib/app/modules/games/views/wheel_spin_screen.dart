@@ -155,6 +155,7 @@ class WheelSpinScreen extends StatelessWidget {
               Obx(() {
                 final hasSpunToday = wheelSpinController.hasSpunToday.value;
                 final lastReward = wheelSpinController.lastReward.value;
+                if (wheelSpinController.rewards.isEmpty) return SizedBox.shrink();
                 return Text(
                   hasSpunToday && lastReward != 0
                       ? "You earned $lastReward coins today"
@@ -178,7 +179,7 @@ class WheelSpinScreen extends StatelessWidget {
                 }
                 return CustomButton(
                   ontap: () async {
-                  await  wheelSpinController.spinWheel();
+                    await wheelSpinController.spinWheel();
                   },
                   isLoading: false.obs,
                   child: Text(

@@ -40,10 +40,10 @@ class EarnService {
           'Authorization': 'Bearer $token',
         },
         body: jsonEncode({
-          'stake': stake,
-          'balance': balance,
+          'stake': stake.toStringAsFixed(2),
+          'balance': balance.toStringAsFixed(2),
           'win': win,
-          'amount': amount,
+          'amount': amount.toStringAsFixed(2),
         }),
       );
       return response;
@@ -68,4 +68,6 @@ class EarnService {
     }
     return null;
   }
+
+
 }

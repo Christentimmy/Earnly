@@ -19,7 +19,7 @@ class UserController extends GetxController {
       if (response == null) return;
 
       final decoded = json.decode(response.body);
-      final message = decoded["message"];
+      final message = decoded["message"] ?? "";
 
       if (response.statusCode != 200) {
         debugPrint(message);
@@ -30,7 +30,6 @@ class UserController extends GetxController {
       if (data == null) return;
       final user = UserModel.fromJson(data);
       userModel.value = user;
-      
     } catch (e) {
       debugPrint(e.toString());
     }

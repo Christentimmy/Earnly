@@ -1,13 +1,11 @@
+import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'account_settings_screen.dart';
 import 'notification_screen.dart';
 import 'security_screen.dart';
 import 'invite_friend_screen.dart';
 import 'about_app_screen.dart';
-import '../app/modules/home/views/home_screen.dart';
-import '../app/modules/wallet/views/wallet_screen.dart';
-import '../app/modules/games/views/game_screen.dart';
-import 'login_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -211,10 +209,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      // Navigator.pushReplacement(
-                      //   context,
-                      //   MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      // );
+                      Get.offAllNamed(AppRoutes.loginScreen);
                     },
 
                     child: const Text(
@@ -231,80 +226,7 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
 
-            // 🔹 Floating Bottom Navigation
-            Positioned(
-              bottom: 20,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  height: 55,
-                  width: 280,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(40),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.home_outlined,
-                          color: Colors.black54,
-                          size: 28,
-                        ),
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>  HomeScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.videogame_asset_outlined,
-                          color: Colors.black54,
-                          size: 28,
-                        ),
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const GameScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      const Icon(Icons.settings, color: Colors.black, size: 28),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.wallet_outlined,
-                          color: Colors.black54,
-                          size: 28,
-                        ),
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const WalletScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+           
           ],
         ),
       ),
