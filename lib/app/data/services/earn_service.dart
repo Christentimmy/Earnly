@@ -101,13 +101,10 @@ class EarnService {
     return null;
   }
 
-  Future<http.Response?> earnHistory({
-    required String token,
-    int? page,
-  })async{
+  Future<http.Response?> earnHistory({required String token, int? page}) async {
     try {
       String url = "$baseUrl/earn/earn-history";
-      if(page != null){
+      if (page != null) {
         url += "?page=$page";
       }
       final response = await http.get(
@@ -124,4 +121,19 @@ class EarnService {
     return null;
   }
 
+  Future<http.Response?> getExchangeRate({required String token}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/earn/exchange-rate'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
 }

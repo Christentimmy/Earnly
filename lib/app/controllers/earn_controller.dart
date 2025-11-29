@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 
 class EarnController extends GetxController {
   final isloading = false.obs;
+  final exchangeRate = 0.0.obs;
   final EarnService earnService = EarnService();
 
   final RxList<int> wheelSpinRewards = <int>[].obs;
@@ -184,6 +185,31 @@ class EarnController extends GetxController {
         return;
       }
       await Get.find<UserController>().getUserDetails();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> getExchangeRate() async {
+    try {
+      final storageController = Get.find<StorageController>();
+      final token = await storageController.getToken();
+      if (token == null) return;
+
+      final response = await earnService.getExchangeRate(token: token);
+      if (response == null) return;
+
+      final decoded = json.decode(response.body);
+      final message = decoded["message"];
+
+      if (response.statusCode != 200) {
+        debugPrint(message);
+        return;
+      }
+
+      final data = decoded["data"];
+      if (data == null) return;
+      exchangeRate.value = double.tryParse(data.toString()) ?? 0.0;
     } catch (e) {
       debugPrint(e.toString());
     }

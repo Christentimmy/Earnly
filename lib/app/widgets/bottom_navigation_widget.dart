@@ -1,8 +1,9 @@
 import 'package:earnly/app/modules/home/views/home_screen.dart';
+import 'package:earnly/app/modules/wallet/views/new_wallet_screen.dart';
 import 'package:earnly/app/resources/colors.dart';
 import 'package:earnly/app/modules/games/views/game_screen.dart';
 import 'package:earnly/screens/settings_screen.dart';
-import 'package:earnly/app/modules/wallet/views/wallet_screen.dart';
+// import 'package:earnly/app/modules/wallet/views/wallet_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';

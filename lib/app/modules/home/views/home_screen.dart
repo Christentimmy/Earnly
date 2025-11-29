@@ -1,3 +1,4 @@
+import 'package:cherry_toast/cherry_toast.dart';
 import 'package:earnly/app/controllers/earn_controller.dart';
 import 'package:earnly/app/controllers/user_controller.dart';
 import 'package:earnly/app/data/models/history_model.dart';
@@ -76,7 +77,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           const SizedBox(height: 10),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              CherryToast.info(
+                                title: Text("Feature"),
+                                description: Text("Coming soon"),
+                              ).show(context);
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.greenAccent[400],
                               foregroundColor: Colors.black,
@@ -284,13 +290,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                               ),
-                              Text(
-                                "\$100.46 USD",
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 15,
-                                ),
-                              ),
+                              // Text(
+                              //   "\$100.46 USD",
+                              //   style: TextStyle(
+                              //     color: Colors.black54,
+                              //     fontSize: 15,
+                              //   ),
+                              // ),
                             ],
                           ),
                           Image(
@@ -317,12 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         color: AppColors.primaryColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color:
-              game.type.contains("win")
-                  ? Colors.green.withValues(alpha: 0.3)
-                  : Colors.red.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: getBorderColor(game.type)),
       ),
       child: Row(
         children: [
@@ -330,10 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color:
-                  game.type.contains("win")
-                      ? Colors.green.withValues(alpha: 0.2)
-                      : Colors.red.withValues(alpha: 0.2),
+              color: getBorderColor(game.type),
               borderRadius: BorderRadius.circular(8),
             ),
             alignment: Alignment.center,
@@ -355,8 +353,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   getTitle(game.type),
                   style: TextStyle(
-                    color:
-                        game.type.contains("win") ? Colors.green : Colors.red,
+                    color: getTitleColor(game.type),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -381,7 +378,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             game.amount.toStringAsFixed(2),
             style: TextStyle(
-              color: game.type.contains("win") ? Colors.green : Colors.red,
+              color: getTitleColor(game.type),
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
@@ -440,14 +437,33 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  String getTitle(String type){
-    if(type.contains("dice")){
+  String getTitle(String type) {
+    if (type.contains("dice")) {
       return "Dice";
-    }else if(type.contains("wheel")){
+    } else if (type.contains("wheel")) {
       return "Wheel Spin";
-    }else{
+    } else {
       return "Ads Watch";
     }
   }
 
+  Color getBorderColor(String type) {
+    if (type.contains("dice") && type.contains("win")) {
+      return Colors.green.withValues(alpha: 0.3);
+    } else if (type.contains("dice") && type.contains("loss")) {
+      return Colors.red.withValues(alpha: 0.3);
+    } else {
+      return Colors.green.withValues(alpha: 0.3);
+    }
+  }
+
+  Color getTitleColor(String type) {
+    if (type.contains("dice") && type.contains("win")) {
+      return Colors.green;
+    } else if (type.contains("dice") && type.contains("loss")) {
+      return Colors.red;
+    } else {
+      return Colors.green;
+    }
+  }
 }

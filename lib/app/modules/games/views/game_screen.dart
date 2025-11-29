@@ -1,3 +1,4 @@
+import 'package:cherry_toast/cherry_toast.dart';
 import 'package:earnly/app/resources/colors.dart';
 import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,12 @@ class _GameScreenState extends State<GameScreen> {
       title: 'Ludo Master',
       description: 'Classic board game with friends',
       imagePath: 'assets/images/ludo.png',
-      onTap: () {},
+      onTap: () {
+        CherryToast.info(
+          title: Text("Feature"),
+          description: Text("Coming soon"),
+        ).show(Get.context!);
+      },
       gradient: const LinearGradient(
         colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
         begin: Alignment.topLeft,
