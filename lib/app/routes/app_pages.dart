@@ -1,3 +1,4 @@
+import 'package:earnly/app/modules/ads/views/watch_ads_screen.dart';
 import 'package:earnly/app/modules/auth/views/otp_screen.dart';
 import 'package:earnly/app/modules/auth/views/forget_password_screen.dart';
 import 'package:earnly/app/modules/auth/views/login_screen.dart';
@@ -56,5 +57,13 @@ class AppPages {
     GetPage(name: AppRoutes.splashScreen, page: () => SplashScreen()),
     GetPage(name: AppRoutes.wheelSpinScreen, page: () => WheelSpinScreen()),
     GetPage(name: AppRoutes.diceGameScreen, page: () => DiceGameScreen()),
+    GetPage(name: AppRoutes.watchAd, page: (){
+      final arguments = Get.arguments ?? {};
+      final url = arguments['url'] as String;
+      if (url.isEmpty) {
+        throw Exception('Url is required');
+      }
+      return WatchAdsScreen(url: url);
+    }),
   ];
 }

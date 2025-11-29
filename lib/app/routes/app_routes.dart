@@ -16,4 +16,5 @@ class AppRoutes {
   static const String splashScreen = "/splash-screen";
   static const String wheelSpinScreen = "/wheel-spin-screen";
   static const String diceGameScreen = "/dice-game-screen";
+  static const String watchAd = "/watch-ad";
 }

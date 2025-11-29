@@ -69,5 +69,59 @@ class EarnService {
     return null;
   }
 
+  Future<http.Response?> getAd({required String token}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/earn/get-ad'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<http.Response?> completedAd({required String token}) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/earn/completed-ad'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<http.Response?> earnHistory({
+    required String token,
+    int? page,
+  })async{
+    try {
+      String url = "$baseUrl/earn/earn-history";
+      if(page != null){
+        url += "?page=$page";
+      }
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
 
 }

@@ -1,12 +1,35 @@
+import 'package:earnly/app/controllers/earn_controller.dart';
 import 'package:earnly/app/controllers/user_controller.dart';
+import 'package:earnly/app/data/models/history_model.dart';
 import 'package:earnly/app/resources/colors.dart';
+import 'package:earnly/app/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final userController = Get.find<UserController>();
+  final earnController = Get.find<EarnController>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userController.userModel.value == null) {
+        userController.getUserDetails();
+      }
+      if (earnController.history.isEmpty) {
+        earnController.getEarnHistory();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,23 +121,20 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white.withOpacity(0.7),
-                              foregroundColor: Colors.black54,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 14,
-                                horizontal: 50,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              elevation: 0,
-                            ),
-                            child: const Text(
+                          CustomButton(
+                            ontap: () => earnController.getAd(),
+                            isLoading: earnController.isloading,
+                            bgColor: Colors.white.withValues(alpha: 0.7),
+                            borderRadius: BorderRadius.circular(30),
+                            width: Get.width * 0.52,
+                            height: 47,
+                            loaderColor: AppColors.primaryColor,
+                            child: Text(
                               "Earn Points",
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54,
+                              ),
                             ),
                           ),
                         ],
@@ -154,7 +174,22 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     // History List
-                    _buildHistoryList(),
+                    // HomeScreen._buildHistoryList(),
+                    Obx(() {
+                      if (earnController.history.isEmpty) {
+                        return SizedBox.shrink();
+                      }
+
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: earnController.history.length,
+                        itemBuilder: (context, index) {
+                          final game = earnController.history[index];
+                          return _buildHistoryItem(game);
+                        },
+                      );
+                    }),
                     const SizedBox(height: 100),
                   ],
                 ),
@@ -275,8 +310,88 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 🔹 History List Widget
-  static Widget _buildHistoryList() {
+  Widget _buildHistoryItem(HistoryModel game) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.primaryColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color:
+              game.type.contains("win")
+                  ? Colors.green.withValues(alpha: 0.3)
+                  : Colors.red.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color:
+                  game.type.contains("win")
+                      ? Colors.green.withValues(alpha: 0.2)
+                      : Colors.red.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              '${game.type[0].capitalizeFirst}',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  getTitle(game.type),
+                  style: TextStyle(
+                    color:
+                        game.type.contains("win") ? Colors.green : Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                game.type.contains("dice")
+                    ? Text(
+                      'Stake: ${game.meta["stake"]}',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12,
+                      ),
+                    )
+                    : Text(
+                      'Reward: ${game.meta["reward"]}',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12,
+                      ),
+                    ),
+              ],
+            ),
+          ),
+          Text(
+            game.amount.toStringAsFixed(2),
+            style: TextStyle(
+              color: game.type.contains("win") ? Colors.green : Colors.red,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildHistoryList() {
     final List<Map<String, dynamic>> history = List.generate(
       8,
       (index) => {
@@ -324,4 +439,15 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
+  String getTitle(String type){
+    if(type.contains("dice")){
+      return "Dice";
+    }else if(type.contains("wheel")){
+      return "Wheel Spin";
+    }else{
+      return "Ads Watch";
+    }
+  }
+
 }

@@ -1,3 +1,4 @@
+import 'package:earnly/app/resources/colors.dart';
 import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,7 +14,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF60D07E),
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Stack(
           alignment: Alignment.bottomCenter,

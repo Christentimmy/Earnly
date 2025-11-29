@@ -113,7 +113,7 @@ class AuthService {
               "Authorization": "Bearer $token",
             },
           )
-          .timeout(const Duration(seconds: 30));
+          .timeout(const Duration(seconds: 10));
       return response;
     } on SocketException catch (e) {
       debugPrint(e.toString());
