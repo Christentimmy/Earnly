@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:earnly/app/controllers/storage_controller.dart';
 import 'package:earnly/app/data/models/user_model.dart';
+import 'package:earnly/app/data/models/withdraw_model.dart';
 import 'package:earnly/app/data/services/user_service.dart';
 import 'package:earnly/app/resources/colors.dart';
 import 'package:earnly/app/widgets/snack_bar.dart';
@@ -12,6 +13,10 @@ class UserController extends GetxController {
   final UserService userService = UserService();
   final Rxn<UserModel> userModel = Rxn<UserModel>();
   final isloading = false.obs;
+  final RxList<WithdrawModel> withdrawHistory = RxList<WithdrawModel>();
+
+  final currentPage = 1.obs;
+  final hasNextPage = false.obs;
 
   Future<void> getUserDetails() async {
     try {
@@ -69,6 +74,8 @@ class UserController extends GetxController {
         return;
       }
       Get.back();
+      getWithdrawHistory();
+      getUserDetails();
       _showSuccessDialog();
     } catch (e) {
       debugPrint(e.toString());
@@ -149,5 +156,48 @@ class UserController extends GetxController {
             ),
           ),
     );
+  }
+
+  Future<void> getWithdrawHistory({
+    bool showLoder = true,
+    bool loadMore = false,
+  }) async {
+    isloading.value = showLoder;
+    try {
+      final storageController = Get.find<StorageController>();
+      final token = await storageController.getToken();
+      if (token == null) return;
+
+      if (loadMore && hasNextPage.value) {
+        currentPage.value++;
+      }
+
+      final response = await userService.getWithdrawHistory(
+        token: token,
+        page: currentPage.value,
+      );
+      if (response == null) return;
+
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        debugPrint(message);
+        return;
+      }
+      final data = decoded["data"];
+      if (data == null) return;
+      List<WithdrawModel> raw =
+          (data as List).map((e) => WithdrawModel.fromJson(e)).toList();
+      if (loadMore) {
+        withdrawHistory.addAll(raw);
+      } else {
+        withdrawHistory.value = raw;
+      }
+      hasNextPage.value = decoded["hasNextPage"] as bool;
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
   }
 }

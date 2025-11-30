@@ -62,4 +62,29 @@ class UserService {
     }
     return null;
   }
+
+  Future<http.Response?> getWithdrawHistory({
+    required String token,
+    required int page,
+  }) async {
+    try {
+      final response = await http
+          .get(
+            Uri.parse("$baseUrl/user/withdraw-history?page=$page"),
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer $token",
+            },
+          )
+          .timeout(const Duration(seconds: 30));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+    } on TimeoutException {
+      debugPrint("Request timeout");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
 }

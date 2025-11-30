@@ -30,6 +30,7 @@ class _WithdrawScreenState extends State<WithdrawScreen>
   RxDouble estimatedReceive = 0.0.obs;
   RxDouble exchangeRate = 0.0.obs;
   final isValid = false.obs;
+
   final List<Map<String, dynamic>> networks = [
     {
       'name': 'Bitcoin (BTC)',

@@ -11,6 +11,7 @@ import 'package:earnly/app/modules/onboarding/views/onboarding_screen_1.dart';
 import 'package:earnly/app/modules/onboarding/views/onboarding_screen_2.dart';
 import 'package:earnly/app/modules/onboarding/views/welcome_screen.dart';
 import 'package:earnly/app/modules/splash/views/splash_screen.dart';
+import 'package:earnly/app/modules/wallet/views/history_screen.dart';
 import 'package:earnly/app/modules/wallet/views/wallet_screen.dart';
 import 'package:earnly/app/modules/wallet/views/withdraw_screen.dart';
 import 'package:earnly/app/routes/app_routes.dart';
@@ -58,14 +59,18 @@ class AppPages {
     GetPage(name: AppRoutes.splashScreen, page: () => SplashScreen()),
     GetPage(name: AppRoutes.wheelSpinScreen, page: () => WheelSpinScreen()),
     GetPage(name: AppRoutes.diceGameScreen, page: () => DiceGameScreen()),
-    GetPage(name: AppRoutes.watchAd, page: (){
-      final arguments = Get.arguments ?? {};
-      final url = arguments['url'] as String;
-      if (url.isEmpty) {
-        throw Exception('Url is required');
-      }
-      return WatchAdsScreen(url: url);
-    }),
+    GetPage(
+      name: AppRoutes.watchAd,
+      page: () {
+        final arguments = Get.arguments ?? {};
+        final url = arguments['url'] as String;
+        if (url.isEmpty) {
+          throw Exception('Url is required');
+        }
+        return WatchAdsScreen(url: url);
+      },
+    ),
     GetPage(name: AppRoutes.withdrawScreen, page: () => const WithdrawScreen()),
+    GetPage(name: AppRoutes.historyScreen, page: () => HistoryScreen()),
   ];
 }

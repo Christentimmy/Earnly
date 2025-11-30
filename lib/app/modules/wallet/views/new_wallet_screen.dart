@@ -1,5 +1,6 @@
 import 'package:earnly/app/controllers/earn_controller.dart';
 import 'package:earnly/app/controllers/user_controller.dart';
+import 'package:earnly/app/modules/wallet/widgets/build_transaction_item.dart';
 import 'package:earnly/app/resources/colors.dart';
 import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,9 @@ class _WalletScreenState extends State<WalletScreen> {
     super.initState();
     earnController.getExchangeRate();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userController.withdrawHistory.isEmpty) {
+        userController.getWithdrawHistory();
+      }
       if (earnController.exchangeRate.value != 0) return;
       earnController.getExchangeRate();
     });
@@ -57,6 +61,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 _buildQuickActions(),
                 const SizedBox(height: 24),
                 _buildTransactionHistory(),
+                SizedBox(height: Get.height * 0.1),
               ],
             ),
           ),
@@ -274,7 +279,7 @@ class _WalletScreenState extends State<WalletScreen> {
             ],
             AppColors.lightGreen,
             false,
-            () {},
+            ()=> Get.toNamed(AppRoutes.historyScreen),
           ),
         ),
       ],
@@ -341,44 +346,6 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   Widget _buildTransactionHistory() {
-    final transactions = [
-      {
-        'type': 'earn',
-        'amount': 250,
-        'desc': 'Video Ad Completed',
-        'time': '2 hours ago',
-        'icon': Icons.card_giftcard,
-      },
-      {
-        'type': 'earn',
-        'amount': 180,
-        'desc': 'Survey Completed',
-        'time': '5 hours ago',
-        'icon': Icons.bolt,
-      },
-      {
-        'type': 'withdraw',
-        'amount': -500,
-        'desc': 'BTC Withdrawal',
-        'time': '1 day ago',
-        'icon': Icons.currency_bitcoin,
-      },
-      {
-        'type': 'earn',
-        'amount': 320,
-        'desc': 'Referral Bonus',
-        'time': '2 days ago',
-        'icon': Icons.people,
-      },
-      {
-        'type': 'earn',
-        'amount': 150,
-        'desc': 'Daily Login Streak',
-        'time': '2 days ago',
-        'icon': Icons.shield,
-      },
-    ];
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -406,88 +373,22 @@ class _WalletScreenState extends State<WalletScreen> {
           ],
         ),
         const SizedBox(height: 16),
-        ...transactions
-            .map(
-              (tx) => _buildTransactionItem(
-                tx['desc'] as String,
-                tx['time'] as String,
-                tx['amount'] as int,
-                tx['icon'] as IconData,
-                tx['type'] as String == 'earn',
-              ),
-            )
-            .toList(),
+        Obx(() {
+          if (userController.withdrawHistory.isEmpty) {
+            return const Center(child: Text('No transactions found'));
+          }
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: userController.withdrawHistory.length,
+            itemBuilder: (context, index) {
+              final transaction = userController.withdrawHistory[index];
+              return buildTransactionItem(withdraw: transaction);
+            },
+          );
+        }),
       ],
     );
   }
 
-  Widget _buildTransactionItem(
-    String description,
-    String time,
-    int amount,
-    IconData icon,
-    bool isPositive,
-  ) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.primaryColor.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.accentGreen.withOpacity(0.1),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color:
-                  isPositive
-                      ? AppColors.accentGreen.withOpacity(0.2)
-                      : Colors.red.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              icon,
-              color: isPositive ? AppColors.accentGreen : Colors.red[400],
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  time,
-                  style: TextStyle(fontSize: 13, color: Colors.grey[400]),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            '${isPositive ? '+' : ''}$amount',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: isPositive ? AppColors.accentGreen : Colors.red[400],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

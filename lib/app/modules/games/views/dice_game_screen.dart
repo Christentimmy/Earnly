@@ -531,7 +531,7 @@ class DiceGameScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Stake: \$${game.stake.toStringAsFixed(2)}',
+                  'Stake: ${game.stake.toStringAsFixed(2)}',
                   style: const TextStyle(color: Colors.white70, fontSize: 12),
                 ),
               ],
@@ -539,8 +539,8 @@ class DiceGameScreen extends StatelessWidget {
           ),
           Text(
             game.won
-                ? '+\$${(game.payout - game.stake).toStringAsFixed(2)}'
-                : '-\$${game.stake.toStringAsFixed(2)}',
+                ? '+${(game.payout - game.stake).toStringAsFixed(2)}'
+                : '-${game.stake.toStringAsFixed(2)}',
             style: TextStyle(
               color: game.won ? Colors.green : Colors.red,
               fontWeight: FontWeight.bold,
