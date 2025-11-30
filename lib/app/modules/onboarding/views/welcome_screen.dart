@@ -1,6 +1,8 @@
 import 'package:earnly/app/routes/app_routes.dart';
+import 'package:earnly/app/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -80,33 +82,17 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF9DF5AE),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      elevation: 0,
-                    ),
-                    onPressed: () {
-                      Get.toNamed(AppRoutes.registerScreen);
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (_) => const RegisterScreen(),
-                      //   ),
-                      // );
-                    },
-                    child: const Text(
-                      "Continue",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
+                CustomButton(
+                  isLoading: false.obs,
+                  ontap: () {
+                    Get.toNamed(AppRoutes.registerScreen);
+                  },
+                  child: Text(
+                    "Continue",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
                     ),
                   ),
                 ),

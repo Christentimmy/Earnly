@@ -1,3 +1,4 @@
+import 'package:earnly/app/controllers/storage_controller.dart';
 import 'package:earnly/app/controllers/user_controller.dart';
 import 'package:earnly/app/resources/colors.dart';
 import 'package:earnly/app/routes/app_routes.dart';
@@ -214,6 +215,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
+                  Get.find<StorageController>().deleteToken();
                   Get.offAllNamed(AppRoutes.loginScreen);
                 },
 
