@@ -3,6 +3,7 @@ import 'package:earnly/app/modules/auth/views/otp_screen.dart';
 import 'package:earnly/app/modules/auth/views/forget_password_screen.dart';
 import 'package:earnly/app/modules/auth/views/login_screen.dart';
 import 'package:earnly/app/modules/auth/views/register_screen.dart';
+import 'package:earnly/app/modules/auth/views/reset_password_screen.dart';
 import 'package:earnly/app/modules/games/views/dice_game_screen.dart';
 import 'package:earnly/app/modules/games/views/game_screen.dart';
 import 'package:earnly/app/modules/games/views/wheel_spin_screen.dart';
@@ -34,7 +35,7 @@ class AppPages {
     GetPage(name: AppRoutes.registerScreen, page: () => RegisterScreen()),
     GetPage(
       name: AppRoutes.forgetPasswordScreen,
-      page: () => const ForgetPasswordScreen(),
+      page: () => ForgetPasswordScreen(),
     ),
     GetPage(
       name: AppRoutes.otpScreen,
@@ -72,5 +73,13 @@ class AppPages {
     ),
     GetPage(name: AppRoutes.withdrawScreen, page: () => const WithdrawScreen()),
     GetPage(name: AppRoutes.historyScreen, page: () => HistoryScreen()),
+    GetPage(name: AppRoutes.resetPasswordScreen, page: (){
+      final arguments = Get.arguments ?? {};
+      final email = arguments['email'] as String;
+      if (email.isEmpty) {
+        throw Exception('Email is required');
+      }
+      return ResetPasswordScreen(email: email);
+    }),
   ];
 }

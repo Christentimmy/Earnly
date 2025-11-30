@@ -5,7 +5,6 @@ import 'package:earnly/app/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'forget_password_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -62,12 +61,7 @@ class LoginScreen extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const ForgetPasswordScreen(),
-                      ),
-                    );
+                    Get.toNamed(AppRoutes.forgetPasswordScreen);
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,

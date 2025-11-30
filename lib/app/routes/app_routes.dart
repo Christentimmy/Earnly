@@ -18,5 +18,6 @@ class AppRoutes {
   static const String diceGameScreen = "/dice-game-screen";
   static const String watchAd = "/watch-ad";
   static const String withdrawScreen = "/withdraw-screen";
-    static const String historyScreen = "/history-screen";
+  static const String historyScreen = "/history-screen";
+  static const String resetPasswordScreen = "/reset-password-screen";
 }

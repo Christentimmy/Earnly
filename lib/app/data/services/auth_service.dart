@@ -124,4 +124,27 @@ class AuthService {
     }
     return null;
   }
+
+  Future<http.Response?> resetPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/auth/reset-password'),
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode({"email": email, "password": password}),
+          )
+          .timeout(const Duration(seconds: 30));
+      return response;
+    } on SocketException {
+      CustomSnackbar.showErrorToast("No internet connection");
+    } on TimeoutException {
+      CustomSnackbar.showErrorToast("Request timeout, please try again");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
 }

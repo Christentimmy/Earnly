@@ -162,4 +162,30 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> resetPassword({
+    required String email,
+    required String password,
+  }) async {
+    isloading.value = true;
+    try {
+      final response = await authService.resetPassword(
+        email: email,
+        password: password,
+      );
+      if (response == null) return;
+
+      final decoded = json.decode(response.body);
+      String message = decoded["message"];
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+
+      Get.offAllNamed(AppRoutes.loginScreen);
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
 }

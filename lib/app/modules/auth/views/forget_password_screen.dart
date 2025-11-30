@@ -1,29 +1,31 @@
+import 'package:earnly/app/controllers/auth_controller.dart';
+import 'package:earnly/app/routes/app_routes.dart';
+import 'package:earnly/app/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ForgetPasswordScreen extends StatelessWidget {
-  const ForgetPasswordScreen({super.key});
+  ForgetPasswordScreen({super.key});
+
+  final authController = Get.find<AuthController>();
+  final emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar:
-          true, // make sure background covers status bar too
+      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          /// Background Image (fills full screen)
           Positioned.fill(
             child: Image.asset(
-              'assets/images/background_2.png', // full-screen background
+              'assets/images/background_2.png',
               fit: BoxFit.cover,
             ),
           ),
 
           /// Transparent overlay (optional for readability)
-          Container(
-            color: Colors.white.withOpacity(
-              0.0,
-            ), // set to 0.1–0.2 if you want a soft tint
-          ),
+          Container(color: Colors.white.withOpacity(0.0)),
 
           /// Main Content
           SingleChildScrollView(
@@ -52,6 +54,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                 /// Email Input
                 TextField(
                   keyboardType: TextInputType.emailAddress,
+                  controller: emailController,
                   decoration: InputDecoration(
                     hintText: "Enter your email",
                     filled: true,
@@ -69,25 +72,29 @@ class ForgetPasswordScreen extends StatelessWidget {
                 const SizedBox(height: 40),
 
                 /// Continue Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF9DF5AE),
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 0,
-                    ),
-                    onPressed: () {},
-                    child: const Text(
-                      "Continue",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+                CustomButton(
+                  ontap: () async {
+                    if (emailController.text.isEmpty) return;
+                    Get.toNamed(
+                      AppRoutes.otpScreen,
+                      arguments: {
+                        'email': emailController.text,
+                        'whatNext':
+                            () => Get.toNamed(
+                              AppRoutes.resetPasswordScreen,
+                              arguments: {"email": emailController.text},
+                            ),
+                      },
+                    );
+                    await authController.sendOtp(email: emailController.text);
+                  },
+                  isLoading: authController.isloading,
+                  child: Text(
+                    "Continue",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -95,7 +102,7 @@ class ForgetPasswordScreen extends StatelessWidget {
 
                 /// Back to Login
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () => Get.back(),
                   child: const Text(
                     "Back to Login",
                     style: TextStyle(
