@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../app/modules/home/views/home_screen.dart';
 import '../app/modules/games/views/game_screen.dart';
-import 'settings_screen.dart';
+import '../app/modules/settings/views/settings_screen.dart';
 import '../app/modules/wallet/views/wallet_screen.dart';
 
 class WheelSpinScreen extends StatefulWidget {
@@ -242,7 +242,7 @@ class _WheelSpinScreenState extends State<WheelSpinScreen> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const SettingsScreen(),
+                              builder: (_) => SettingsScreen(),
                             ),
                           );
                         },
