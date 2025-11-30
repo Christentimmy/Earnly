@@ -34,7 +34,13 @@ class UserService {
     required String network,
     required String address,
     required String amount,
+    String? memo,
   }) async {
+    Map body = {
+      "amount": amount,
+      "paymentDetails": {"network": network, "walletAddress": address},
+    };
+    if (memo != null) body['memo'] = memo;
     try {
       final response = await http
           .post(
@@ -43,10 +49,7 @@ class UserService {
               "Content-Type": "application/json",
               "Authorization": "Bearer $token",
             },
-            body: jsonEncode({
-              "amount": amount,
-              "paymentDetails": {"network": network, "walletAddress": address},
-            }),
+            body: jsonEncode(body),
           )
           .timeout(const Duration(seconds: 30));
       return response;

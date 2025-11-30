@@ -12,6 +12,7 @@ import 'package:earnly/app/modules/onboarding/views/onboarding_screen_2.dart';
 import 'package:earnly/app/modules/onboarding/views/welcome_screen.dart';
 import 'package:earnly/app/modules/splash/views/splash_screen.dart';
 import 'package:earnly/app/modules/wallet/views/wallet_screen.dart';
+import 'package:earnly/app/modules/wallet/views/withdraw_screen.dart';
 import 'package:earnly/app/routes/app_routes.dart';
 import 'package:earnly/app/widgets/bottom_navigation_widget.dart';
 import 'package:flutter/material.dart';
@@ -65,5 +66,6 @@ class AppPages {
       }
       return WatchAdsScreen(url: url);
     }),
+    GetPage(name: AppRoutes.withdrawScreen, page: () => const WithdrawScreen()),
   ];
 }

@@ -209,7 +209,9 @@ class EarnController extends GetxController {
 
       final data = decoded["data"];
       if (data == null) return;
+      print("Data ------------------------------  $data");
       exchangeRate.value = double.tryParse(data.toString()) ?? 0.0;
+      print("Exchange Rate ------------------------------  ${exchangeRate.value}");
     } catch (e) {
       debugPrint(e.toString());
     }

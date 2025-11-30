@@ -1,6 +1,7 @@
 import 'package:earnly/app/controllers/earn_controller.dart';
 import 'package:earnly/app/controllers/user_controller.dart';
 import 'package:earnly/app/resources/colors.dart';
+import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,6 +20,7 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   void initState() {
     super.initState();
+    earnController.getExchangeRate();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (earnController.exchangeRate.value != 0) return;
       earnController.getExchangeRate();
@@ -27,9 +29,6 @@ class _WalletScreenState extends State<WalletScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final btcEquivalent = (points * 0.0000063).toStringAsFixed(8);
-    // final usdEquivalent = (points * 0.42).toStringAsFixed(2);
-
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Container(
@@ -206,9 +205,11 @@ class _WalletScreenState extends State<WalletScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.accentGreen.withOpacity(0.1)),
+              border: Border.all(
+                color: AppColors.accentGreen.withValues(alpha: 0.1),
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,7 +231,8 @@ class _WalletScreenState extends State<WalletScreen> {
                 const SizedBox(height: 8),
                 Obx(() {
                   final points = userController.userModel.value?.credits ?? 0;
-                  final usdEquivalent = (points * 0.42).toStringAsFixed(2);
+                  final exR = earnController.exchangeRate.value;
+                  final usdEquivalent = (points * exR).toStringAsFixed(10);
                   return Text(
                     '\$$usdEquivalent',
                     style: TextStyle(
@@ -258,6 +260,7 @@ class _WalletScreenState extends State<WalletScreen> {
             [AppColors.accentGreen, const Color(0xFF059669)],
             AppColors.accentGreen,
             true,
+            () => Get.toNamed(AppRoutes.withdrawScreen),
           ),
         ),
         const SizedBox(width: 12),
@@ -266,11 +269,12 @@ class _WalletScreenState extends State<WalletScreen> {
             'History',
             Icons.history_rounded,
             [
-              AppColors.primaryColor.withOpacity(0.5),
-              AppColors.darkGreen.withOpacity(0.5),
+              AppColors.primaryColor.withValues(alpha: 0.5),
+              AppColors.darkGreen.withValues(alpha: 0.5),
             ],
             AppColors.lightGreen,
             false,
+            () {},
           ),
         ),
       ],
@@ -283,11 +287,12 @@ class _WalletScreenState extends State<WalletScreen> {
     List<Color> gradientColors,
     Color iconColor,
     bool isPrimary,
+    VoidCallback? onTap,
   ) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         borderRadius: BorderRadius.circular(20),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 20),
