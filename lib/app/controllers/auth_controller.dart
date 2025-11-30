@@ -82,7 +82,6 @@ class AuthController extends GetxController {
   }
 
   Future<void> sendOtp({required String email}) async {
-    isloading.value = true;
     try {
       final response = await authService.sendOtp(email: email);
       if (response == null) return;
@@ -95,8 +94,6 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       debugPrint(e.toString());
-    } finally {
-      isloading.value = false;
     }
   }
 
