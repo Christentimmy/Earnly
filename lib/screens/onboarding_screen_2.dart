@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'welcome_screen.dart';
+// import 'welcome_screen.dart';
 
 class OnboardingScreen2 extends StatefulWidget {
   const OnboardingScreen2({super.key});
@@ -12,18 +12,18 @@ class _OnboardingScreen2State extends State<OnboardingScreen2> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const WelcomeScreen(),
-          transitionDuration: const Duration(milliseconds: 800),
-          transitionsBuilder:
-              (_, animation, __, child) =>
-                  FadeTransition(opacity: animation, child: child),
-        ),
-      );
-    });
+    // Future.delayed(const Duration(seconds: 3), () {
+    //   Navigator.pushReplacement(
+    //     context,
+    //     PageRouteBuilder(
+    //       pageBuilder: (_, __, ___) => const WelcomeScreen(),
+    //       transitionDuration: const Duration(milliseconds: 800),
+    //       transitionsBuilder:
+    //           (_, animation, __, child) =>
+    //               FadeTransition(opacity: animation, child: child),
+    //     ),
+    //   );
+    // });
   }
 
   @override
