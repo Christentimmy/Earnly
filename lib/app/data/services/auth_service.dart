@@ -147,4 +147,26 @@ class AuthService {
     }
     return null;
   }
+
+  Future<http.Response?> logout({required String token}) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/auth/logout'),
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer $token",
+            },
+          )
+          .timeout(const Duration(seconds: 10));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint(e.toString());
+    } on TimeoutException {
+      CustomSnackbar.showErrorToast("Request timeout, please try again");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
 }
