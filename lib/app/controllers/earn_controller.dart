@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:earnly/app/controllers/storage_controller.dart';
 import 'package:earnly/app/controllers/user_controller.dart';
 import 'package:earnly/app/data/models/history_model.dart';
+import 'package:earnly/app/data/models/notik_task_model.dart';
 import 'package:earnly/app/data/services/earn_service.dart';
 import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class EarnController extends GetxController {
   final historyPageIndex = 1.obs;
   final historyHasNextPage = false.obs;
   final RxList<HistoryModel> history = <HistoryModel>[].obs;
+  final notikTaskList = <NotikTaskModel>[].obs;
 
   @override
   void onInit() {
@@ -209,11 +211,39 @@ class EarnController extends GetxController {
 
       final data = decoded["data"];
       if (data == null) return;
-      print("Data ------------------------------  $data");
       exchangeRate.value = double.tryParse(data.toString()) ?? 0.0;
-      print("Exchange Rate ------------------------------  ${exchangeRate.value}");
     } catch (e) {
       debugPrint(e.toString());
+    }
+  }
+
+  Future<void> getNotikAds() async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      final token = await storageController.getToken();
+      if (token == null) return;
+
+      final response = await earnService.getNotikAds(token: token);
+      if (response == null) return;
+
+      final decoded = json.decode(response.body);
+      final message = decoded["message"];
+
+      if (response.statusCode != 200) {
+        debugPrint(message);
+        return;
+      }
+
+      List data = decoded["data"] ?? [];
+      if (data.isEmpty) return;
+      List<NotikTaskModel> mapped =
+          data.map((e) => NotikTaskModel.fromJson(e)).toList();
+      notikTaskList.value = mapped;
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
     }
   }
 }

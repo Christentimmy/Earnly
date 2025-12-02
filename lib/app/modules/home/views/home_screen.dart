@@ -3,6 +3,7 @@ import 'package:earnly/app/controllers/earn_controller.dart';
 import 'package:earnly/app/controllers/user_controller.dart';
 import 'package:earnly/app/data/models/history_model.dart';
 import 'package:earnly/app/resources/colors.dart';
+import 'package:earnly/app/routes/app_routes.dart';
 import 'package:earnly/app/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -119,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         children: [
                           const Text(
-                            "Earn more point by watching Ads",
+                            "Earn more point by completing tasks",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
@@ -128,7 +129,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           const SizedBox(height: 10),
                           CustomButton(
-                            ontap: () => earnController.getAd(),
+                            // ontap: () => earnController.getAd(),
+                            ontap: () => Get.toNamed(AppRoutes.notikTaskScreen),
                             isLoading: earnController.isloading,
                             bgColor: Colors.white.withValues(alpha: 0.7),
                             borderRadius: BorderRadius.circular(30),

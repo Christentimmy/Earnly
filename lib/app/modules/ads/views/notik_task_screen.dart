@@ -1,0 +1,182 @@
+import 'package:earnly/app/controllers/earn_controller.dart';
+import 'package:earnly/app/data/models/notik_task_model.dart';
+import 'package:earnly/app/modules/ads/controller/notik_task_screen_controller.dart';
+import 'package:earnly/app/resources/colors.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class NotikTaskScreen extends StatefulWidget {
+  const NotikTaskScreen({super.key});
+
+  @override
+  State<NotikTaskScreen> createState() => _NotikTaskScreenState();
+}
+
+class _NotikTaskScreenState extends State<NotikTaskScreen> {
+  final earnController = Get.find<EarnController>();
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (earnController.notikTaskList.isNotEmpty) return;
+      earnController.getNotikAds();
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.backgroundColor,
+        title: Text(
+          'Tasks Hub',
+          style: GoogleFonts.poppins(
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Obx(() {
+                if (earnController.isloading.value) {
+                  return Expanded(
+                    child: Center(
+                      child: CupertinoActivityIndicator(color: Colors.white),
+                    ),
+                  );
+                }
+                if (earnController.notikTaskList.isEmpty) {
+                  return Expanded(
+                    child: Center(
+                      child: Text(
+                        'No Task Found',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return Expanded(
+                  child: GridView.builder(
+                    itemCount: earnController.notikTaskList.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.85,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                        ),
+                    itemBuilder: (context, index) {
+                      final task = earnController.notikTaskList[index];
+                      return TaskCard(taskModel: task);
+                    },
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class TaskCard extends StatelessWidget {
+  final NotikTaskModel taskModel;
+
+  TaskCard({super.key, required this.taskModel});
+  final notikTaskScreenController = Get.put(NotikTaskScreenController());
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Stack(
+            children: [
+              // Game Image with Gradient Overlay
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: notikTaskScreenController.getGradient(),
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Image.network(
+                  taskModel.imageUrl ?? "",
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                  opacity: const AlwaysStoppedAnimation(0.3),
+                ),
+              ),
+
+              // Content
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      taskModel.name!.length > 20
+                          ? "${taskModel.name!.substring(0, 20)}..."
+                          : taskModel.name ?? "",
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      taskModel.description1!.length > 30
+                          ? "${taskModel.description1!.substring(0, 30)}..."
+                          : taskModel.description1 ?? "",
+                      style: GoogleFonts.poppins(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

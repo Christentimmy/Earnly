@@ -1,3 +1,4 @@
+import 'package:earnly/app/modules/ads/views/notik_task_screen.dart';
 import 'package:earnly/app/modules/ads/views/watch_ads_screen.dart';
 import 'package:earnly/app/modules/auth/views/otp_screen.dart';
 import 'package:earnly/app/modules/auth/views/forget_password_screen.dart';
@@ -81,5 +82,6 @@ class AppPages {
       }
       return ResetPasswordScreen(email: email);
     }),
+    GetPage(name: AppRoutes.notikTaskScreen, page: () => NotikTaskScreen()),
   ];
 }
