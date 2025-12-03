@@ -1,7 +1,7 @@
 import 'package:earnly/app/controllers/earn_controller.dart';
 import 'package:earnly/app/data/models/notik_task_model.dart';
-import 'package:earnly/app/modules/ads/controller/notik_task_screen_controller.dart';
 import 'package:earnly/app/resources/colors.dart';
+import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -96,13 +96,16 @@ class _NotikTaskScreenState extends State<NotikTaskScreen> {
 class TaskCard extends StatelessWidget {
   final NotikTaskModel taskModel;
 
-  TaskCard({super.key, required this.taskModel});
-  final notikTaskScreenController = Get.put(NotikTaskScreenController());
+  const TaskCard({super.key, required this.taskModel});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap:
+          () => Get.toNamed(
+            AppRoutes.notikTaskDetailsScreen,
+            arguments: {'task': taskModel},
+          ),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
@@ -119,21 +122,12 @@ class TaskCard extends StatelessWidget {
           child: Stack(
             children: [
               // Game Image with Gradient Overlay
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: notikTaskScreenController.getGradient(),
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Image.network(
-                  taskModel.imageUrl ?? "",
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                  opacity: const AlwaysStoppedAnimation(0.3),
-                ),
+              Image.network(
+                taskModel.imageUrl ?? "",
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+                opacity: const AlwaysStoppedAnimation(0.7),
               ),
 
               // Content
@@ -143,7 +137,10 @@ class TaskCard extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.8),
+                    ],
                   ),
                 ),
                 child: Column(

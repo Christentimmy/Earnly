@@ -21,4 +21,5 @@ class AppRoutes {
   static const String historyScreen = "/history-screen";
   static const String resetPasswordScreen = "/reset-password-screen";
   static const String notikTaskScreen = "/notik-task-screen";
+  static const String notikTaskDetailsScreen = "/notik-task-details-screen";
 }

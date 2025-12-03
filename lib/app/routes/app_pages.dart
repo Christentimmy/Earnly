@@ -1,3 +1,5 @@
+import 'package:earnly/app/data/models/notik_task_model.dart';
+import 'package:earnly/app/modules/ads/views/notik_task_details_screen.dart';
 import 'package:earnly/app/modules/ads/views/notik_task_screen.dart';
 import 'package:earnly/app/modules/ads/views/watch_ads_screen.dart';
 import 'package:earnly/app/modules/auth/views/otp_screen.dart';
@@ -83,5 +85,13 @@ class AppPages {
       return ResetPasswordScreen(email: email);
     }),
     GetPage(name: AppRoutes.notikTaskScreen, page: () => NotikTaskScreen()),
+    GetPage(name: AppRoutes.notikTaskDetailsScreen, page: (){
+      final arguments = Get.arguments ?? {};
+      final task = arguments['task'] as NotikTaskModel?;
+      if (task == null) {
+        throw Exception('Task is required');
+      }
+      return NotikTaskDetailScreen(taskModel: task);
+    }),
   ];
 }

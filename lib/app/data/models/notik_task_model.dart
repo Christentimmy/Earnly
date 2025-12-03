@@ -41,8 +41,8 @@ class NotikTaskModel {
 
   factory NotikTaskModel.fromJson(Map<String, dynamic> json) {
     return NotikTaskModel(
-      offerId: json["offer_id"] ?? "",
-      name: json["name"] ?? "",
+      offerId: json["offer_id"] != null ? json["offer_id"].toString() : "",
+      name: json["name"] != null ? json["name"].toString() : "",
       imageUrl: json["image_url"] ?? "",
       clickUrl: json["click_url"] ?? "",
       categories:
@@ -84,17 +84,20 @@ class NotikTaskModel {
 }
 
 class Event {
-  Event({required this.id, required this.name, required this.payout});
-
   final String? id;
   final String? name;
   final num? payout;
 
+  Event({this.id, this.name, this.payout});
+
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
-      id: json["id"] ?? "",
-      name: json["name"] ?? "",
-      payout: num.tryParse(json["payout"]?.toString() ?? "0") ?? 0.0,
+      id: json["id"] != null ? json["id"].toString() : "",
+      name: json["name"] != null ? json["name"].toString() : "",
+      payout:
+          json["payout"] != null
+              ? num.tryParse(json["payout"].toString())
+              : 0.0,
     );
   }
 }
