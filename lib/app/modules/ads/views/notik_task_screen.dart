@@ -26,7 +26,8 @@ class _NotikTaskScreenState extends State<NotikTaskScreen> {
     });
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
+              scrollController.position.maxScrollExtent &&
+          !earnController.isloading.value) {
         earnController.getNotikAds(loadMore: true);
       }
     });
@@ -98,7 +99,8 @@ class _NotikTaskScreenState extends State<NotikTaskScreen> {
               Obx(() {
                 if (earnController.notikTaskList.isNotEmpty &&
                     earnController.isloading.value) {
-                  return Expanded(
+                  return SizedBox(
+                    height: 100,
                     child: Center(
                       child: CupertinoActivityIndicator(color: Colors.white),
                     ),
@@ -156,6 +158,9 @@ class TaskCard extends StatelessWidget {
                     highlightColor: AppColors.accentGreen,
                     child: Container(color: AppColors.primaryColor),
                   );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return const SizedBox();
                 },
               ),
 

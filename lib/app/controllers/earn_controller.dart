@@ -7,6 +7,7 @@ import 'package:earnly/app/data/services/earn_service.dart';
 import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 class EarnController extends GetxController {
   final isloading = false.obs;
@@ -18,7 +19,9 @@ class EarnController extends GetxController {
   final historyPageIndex = 1.obs;
   final historyHasNextPage = false.obs;
   final RxList<HistoryModel> history = <HistoryModel>[].obs;
+
   final notikTaskList = <NotikTaskModel>[].obs;
+  final notikNextPage = "".obs;
 
   @override
   void onInit() {
@@ -223,8 +226,16 @@ class EarnController extends GetxController {
       final storageController = Get.find<StorageController>();
       final token = await storageController.getToken();
       if (token == null) return;
+      http.Response? response;
+      if (loadMore && notikNextPage.isNotEmpty) {
+        response = await earnService.getNotikAds(
+          token: token,
+          nextPageUrl: notikNextPage.value,
+        );
+      } else {
+        response = await earnService.getNotikAds(token: token);
+      }
 
-      final response = await earnService.getNotikAds(token: token,loadMore: loadMore);
       if (response == null) return;
 
       final decoded = json.decode(response.body);
@@ -235,11 +246,16 @@ class EarnController extends GetxController {
         return;
       }
 
-      List data = decoded["data"] ?? [];
+      List data = decoded["data"]?["data"] ?? [];
       if (data.isEmpty) return;
       List<NotikTaskModel> mapped =
           data.map((e) => NotikTaskModel.fromJson(e)).toList();
-      notikTaskList.value = mapped;
+      if (loadMore) {
+        notikTaskList.addAll(mapped);
+      } else {
+        notikTaskList.value = mapped;
+      }
+      notikNextPage.value = decoded["data"]?["next_page_url"] ?? "";
     } catch (e) {
       debugPrint(e.toString());
     } finally {

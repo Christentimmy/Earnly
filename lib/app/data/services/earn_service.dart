@@ -137,11 +137,11 @@ class EarnService {
     return null;
   }
 
-  Future<http.Response?> getNotikAds({required String token, required bool loadMore}) async {
+  Future<http.Response?> getNotikAds({required String token, String? nextPageUrl}) async {
     try {
       String url = "$baseUrl/earn/notik-ads";
-      if (loadMore) {
-        url += "?loadMore=true";
+      if (nextPageUrl != null) {
+        url += "?nextPageUrl=$nextPageUrl";
       }
       final response = await http.get(
         Uri.parse(url),
