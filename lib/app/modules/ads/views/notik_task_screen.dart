@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
 
 class NotikTaskScreen extends StatefulWidget {
   const NotikTaskScreen({super.key});
@@ -128,6 +129,14 @@ class TaskCard extends StatelessWidget {
                 height: double.infinity,
                 fit: BoxFit.cover,
                 opacity: const AlwaysStoppedAnimation(0.7),
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Shimmer.fromColors(
+                    baseColor: AppColors.primaryColor,
+                    highlightColor: AppColors.accentGreen,
+                    child: Container(color: AppColors.primaryColor),
+                  );
+                },
               ),
 
               // Content
