@@ -1,4 +1,3 @@
-
 import 'package:earnly/app/resources/colors.dart';
 import 'package:earnly/app/widgets/loaders.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +16,7 @@ class CustomButton extends StatelessWidget {
   double? width;
   Widget? child;
   RxBool isLoading;
+  List<BoxShadow>? boxShadow;
 
   CustomButton({
     super.key,
@@ -31,6 +31,7 @@ class CustomButton extends StatelessWidget {
     this.child,
     required this.isLoading,
     this.loaderColor,
+    this.boxShadow,
   });
 
   @override
@@ -40,11 +41,12 @@ class CustomButton extends StatelessWidget {
       child: Container(
         height: height ?? 55,
         alignment: Alignment.center,
-        width: width ?? Get.width,  
+        width: width ?? Get.width,
         decoration: BoxDecoration(
           border: border,
           borderRadius: borderRadius ?? BorderRadius.circular(10),
           color: bgColor ?? AppColors.primaryColor,
+          boxShadow: boxShadow,
         ),
         child: Obx(() {
           return isLoading.value
