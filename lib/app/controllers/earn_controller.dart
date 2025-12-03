@@ -217,14 +217,14 @@ class EarnController extends GetxController {
     }
   }
 
-  Future<void> getNotikAds() async {
+  Future<void> getNotikAds({bool loadMore = false}) async {
     isloading.value = true;
     try {
       final storageController = Get.find<StorageController>();
       final token = await storageController.getToken();
       if (token == null) return;
 
-      final response = await earnService.getNotikAds(token: token);
+      final response = await earnService.getNotikAds(token: token,loadMore: loadMore);
       if (response == null) return;
 
       final decoded = json.decode(response.body);

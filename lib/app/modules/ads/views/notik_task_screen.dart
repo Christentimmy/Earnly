@@ -17,11 +17,18 @@ class NotikTaskScreen extends StatefulWidget {
 
 class _NotikTaskScreenState extends State<NotikTaskScreen> {
   final earnController = Get.find<EarnController>();
+  final scrollController = ScrollController();
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (earnController.notikTaskList.isNotEmpty) return;
       earnController.getNotikAds();
+    });
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
+        earnController.getNotikAds(loadMore: true);
+      }
     });
     super.initState();
   }
@@ -48,7 +55,8 @@ class _NotikTaskScreenState extends State<NotikTaskScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Obx(() {
-                if (earnController.isloading.value) {
+                if (earnController.notikTaskList.isEmpty &&
+                    earnController.isloading.value) {
                   return Expanded(
                     child: Center(
                       child: CupertinoActivityIndicator(color: Colors.white),
@@ -71,6 +79,7 @@ class _NotikTaskScreenState extends State<NotikTaskScreen> {
                 }
                 return Expanded(
                   child: GridView.builder(
+                    controller: scrollController,
                     itemCount: earnController.notikTaskList.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -85,6 +94,17 @@ class _NotikTaskScreenState extends State<NotikTaskScreen> {
                     },
                   ),
                 );
+              }),
+              Obx(() {
+                if (earnController.notikTaskList.isNotEmpty &&
+                    earnController.isloading.value) {
+                  return Expanded(
+                    child: Center(
+                      child: CupertinoActivityIndicator(color: Colors.white),
+                    ),
+                  );
+                }
+                return const SizedBox();
               }),
             ],
           ),

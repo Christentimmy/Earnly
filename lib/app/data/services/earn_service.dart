@@ -137,10 +137,14 @@ class EarnService {
     return null;
   }
 
-  Future<http.Response?> getNotikAds({required String token}) async {
+  Future<http.Response?> getNotikAds({required String token, required bool loadMore}) async {
     try {
+      String url = "$baseUrl/earn/notik-ads";
+      if (loadMore) {
+        url += "?loadMore=true";
+      }
       final response = await http.get(
-        Uri.parse('$baseUrl/earn/notik-ads'),
+        Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
