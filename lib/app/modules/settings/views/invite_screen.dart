@@ -180,7 +180,7 @@ class _InviteStatsScreenState extends State<InviteStatsScreen> {
         leading: CircleAvatar(
           backgroundColor: AppColors.primaryColor.withOpacity(0.15),
           child: Text(
-            invite.displayName!.substring(0, 1),
+            invite.displayName?.substring(0, 1) ?? "",
             style: const TextStyle(
               color: AppColors.primaryColor,
               fontWeight: FontWeight.bold,
