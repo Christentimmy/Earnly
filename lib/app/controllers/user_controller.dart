@@ -238,6 +238,39 @@ class UserController extends GetxController {
     }
   }
 
+  Future<void> editProfile({
+    required String email,
+    required String name,
+  }) async {
+    try {
+      final storageController = Get.find<StorageController>();
+      final token = await storageController.getToken();
+      if (token == null) return;
+
+      final response = await userService.editProfile(
+        token: token,
+        email: email,
+        name: name,
+      );
+
+      if (response == null) return;
+      final decoded = await json.decode(response.body);
+
+      String message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      
+      await getUserDetails();
+      CustomSnackbar.showSuccessToast(message);
+
+      Get.back();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   clean() {
     userModel.value = null;
     withdrawHistory.clear();

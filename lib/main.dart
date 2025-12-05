@@ -31,6 +31,6 @@ class EarnlyApp extends StatelessWidget {
       getPages: AppPages.pages,
       initialBinding: AppBindings(),
       initialRoute: AppRoutes.splashScreen,
-    );
+    );  
   }
 }

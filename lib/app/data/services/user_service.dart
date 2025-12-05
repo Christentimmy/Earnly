@@ -116,6 +116,32 @@ class UserService {
     return null;
   }
 
-
-
+  Future<http.Response?> editProfile({
+    required String token,
+    required String name,
+    required String email,
+  }) async {
+    print("name $name");
+    print("email $email");
+    try {
+      final response = await http
+          .post(
+            Uri.parse("$baseUrl/user/edit-profile"),
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer $token",
+            },
+            body: jsonEncode({"name": name, "email": email}),
+          )
+          .timeout(const Duration(seconds: 30));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+    } on TimeoutException {
+      debugPrint("Request timeout");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
 }
