@@ -25,4 +25,6 @@ class AppRoutes {
   static const String inviteScreen = "/invite-screen";
   static const String changePassword= "/change-password-screen";
   static const String supportScreen = "/support-screen";
+  static const String termAndConditionScreen = "/term-and-condition-screen";
+  static const String privacyPolicyScreen = "/privacy-policy-screen";
 }

@@ -1,9 +1,11 @@
+
+
 import 'package:earnly/app/resources/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class TermAndCondition extends StatelessWidget {
-  const TermAndCondition({super.key});
+class PrivacyPolicy extends StatelessWidget {
+  const PrivacyPolicy({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,7 @@ class TermAndCondition extends StatelessWidget {
         backgroundColor: AppColors.backgroundColor,
         foregroundColor: Colors.white,
         title: Text(
-          "Term and Condition",
+          "Privacy Policy",
           style: GoogleFonts.poppins(
             color: Colors.white,
             fontSize: 22,

@@ -146,12 +146,12 @@ class SettingsScreen extends StatelessWidget {
               _buildSettingsItem(
                 context,
                 title: "Terms & Conditions",
-                onTap: () {},
+                onTap: () => Get.toNamed(AppRoutes.termAndConditionScreen),
               ),
               _buildSettingsItem(
                 context,
                 title: "Privacy Policy",
-                onTap: () {},
+                onTap: () => Get.toNamed(AppRoutes.privacyPolicyScreen),
               ),
 
               const SizedBox(height: 30),
