@@ -1,4 +1,4 @@
-import 'package:cherry_toast/cherry_toast.dart';
+
 import 'package:earnly/app/controllers/earn_controller.dart';
 import 'package:earnly/app/controllers/user_controller.dart';
 import 'package:earnly/app/data/models/history_model.dart';
@@ -79,10 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(height: 10),
                           ElevatedButton(
                             onPressed: () {
-                              CherryToast.info(
-                                title: Text("Feature"),
-                                description: Text("Coming soon"),
-                              ).show(context);
+                              Get.toNamed(AppRoutes.inviteScreen);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.greenAccent[400],
