@@ -16,6 +16,7 @@ import 'package:earnly/app/modules/home/views/home_screen.dart';
 import 'package:earnly/app/modules/onboarding/views/onboarding_screen_1.dart';
 import 'package:earnly/app/modules/onboarding/views/onboarding_screen_2.dart';
 import 'package:earnly/app/modules/onboarding/views/welcome_screen.dart';
+import 'package:earnly/app/modules/settings/views/edit_profile_screen.dart';
 import 'package:earnly/app/modules/settings/views/invite_screen.dart';
 import 'package:earnly/app/modules/settings/views/privacy_policy.dart';
 import 'package:earnly/app/modules/settings/views/support_screen.dart';
@@ -105,5 +106,7 @@ class AppPages {
     GetPage(name: AppRoutes.termAndConditionScreen, page: () => TermAndCondition()),
     GetPage(name: AppRoutes.privacyPolicyScreen, page: () => PrivacyPolicy()),
     GetPage(name: AppRoutes.redeemScreen, page: () => RedeemCodeScreen()),
+    GetPage(name: AppRoutes.editProfileScreen, page: () => EditProfileScreen()),
+    
   ];
 }

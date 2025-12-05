@@ -103,7 +103,7 @@ class SettingsScreen extends StatelessWidget {
                     vertical: 10,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () => Get.toNamed(AppRoutes.editProfileScreen),
                 child: const Text(
                   "Edit profile",
                   style: TextStyle(color: Colors.white),
