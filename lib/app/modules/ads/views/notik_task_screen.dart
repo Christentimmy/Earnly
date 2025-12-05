@@ -35,6 +35,12 @@ class _NotikTaskScreenState extends State<NotikTaskScreen> {
   }
 
   @override
+  void dispose() {
+    earnController.isloading.value = false;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,

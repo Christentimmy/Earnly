@@ -262,4 +262,14 @@ class EarnController extends GetxController {
       isloading.value = false;
     }
   }
+
+  clean() {
+    wheelSpinRewards.clear();
+    historyPageIndex.value = 1;
+    historyHasNextPage.value = false;
+    history.clear();
+    notikTaskList.clear();
+    notikNextPage.value = "";
+    exchangeRate.value = 0.0;
+  }
 }

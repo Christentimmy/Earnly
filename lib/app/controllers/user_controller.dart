@@ -237,4 +237,11 @@ class UserController extends GetxController {
       isloading.value = false;
     }
   }
+
+  clean() {
+    userModel.value = null;
+    withdrawHistory.clear();
+    currentPage.value = 1;
+    hasNextPage.value = false;
+  }
 }

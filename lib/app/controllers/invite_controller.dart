@@ -83,16 +83,17 @@ class InviteController extends GetxController {
         CustomSnackbar.showErrorToast(message);
         return;
       }
-      CustomSnackbar.showSuccessToast(
-        "Gender application submitted successfully. You will be notified once it is approved.",
-        toastDuration: Duration(seconds: 10),
-      );
+      await Get.find<UserController>().getUserDetails();
       Get.offAllNamed(AppRoutes.bottomNavigationScreen);
     } catch (e) {
       debugPrint(e.toString());
     } finally {
       isloading.value = false;
     }
+  }
+
+  clean(){
+    inviteModel.value = null;
   }
 
 }

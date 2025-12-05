@@ -17,13 +17,10 @@ class RedeemCodeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        // title: Text(
-        //   'Redeem Code',
-        //   style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
-        // ),
+        backgroundColor: AppColors.backgroundColor,
+        foregroundColor: Colors.white,
       ),
       body: SafeArea(
         child: Padding(
@@ -35,6 +32,7 @@ class RedeemCodeScreen extends StatelessWidget {
                 'Enter your redeem code',
                 style: GoogleFonts.poppins(
                   fontSize: 16,
+                  color: Colors.white,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -47,6 +45,7 @@ class RedeemCodeScreen extends StatelessWidget {
                   hintText: 'Enter redeem code',
                   textStyle: GoogleFonts.poppins(
                     fontSize: 16,
+                    color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
                   controller: redeemCodeController,
@@ -87,7 +86,7 @@ class RedeemCodeScreen extends StatelessWidget {
                   'Skip',
                   style: GoogleFonts.poppins(
                     fontSize: 16,
-                    color: AppColors.primaryColor,
+                    color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

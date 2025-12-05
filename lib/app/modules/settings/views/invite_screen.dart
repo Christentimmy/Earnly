@@ -1,5 +1,4 @@
 import 'package:earnly/app/controllers/invite_controller.dart';
-import 'package:earnly/app/controllers/user_controller.dart';
 import 'package:earnly/app/data/models/invite_model.dart';
 import 'package:earnly/app/resources/colors.dart';
 import 'package:earnly/app/widgets/loaders.dart';
@@ -55,16 +54,12 @@ class InviteStatsScreen extends StatefulWidget {
 }
 
 class _InviteStatsScreenState extends State<InviteStatsScreen> {
-  final userController = Get.find<UserController>();
   final inviteController = Get.find<InviteController>();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (userController.userModel.value?.inviteCode?.isEmpty == true) {
-        inviteController.getMyInviteCode();
-      }
       inviteController.getInviteStats();
     });
   }
@@ -97,7 +92,7 @@ class _InviteStatsScreenState extends State<InviteStatsScreen> {
   }
 
   Widget buildLoader() {
-    return Center(child: Loader2());
+    return Center(child: Loader2(color: Colors.white));
   }
 
   Widget buildContent() {

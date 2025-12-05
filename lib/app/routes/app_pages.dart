@@ -6,6 +6,7 @@ import 'package:earnly/app/modules/auth/views/change_password_screen.dart';
 import 'package:earnly/app/modules/auth/views/otp_screen.dart';
 import 'package:earnly/app/modules/auth/views/forget_password_screen.dart';
 import 'package:earnly/app/modules/auth/views/login_screen.dart';
+import 'package:earnly/app/modules/auth/views/redeem_code_screen.dart';
 import 'package:earnly/app/modules/auth/views/register_screen.dart';
 import 'package:earnly/app/modules/auth/views/reset_password_screen.dart';
 import 'package:earnly/app/modules/games/views/dice_game_screen.dart';
@@ -103,5 +104,6 @@ class AppPages {
     GetPage(name: AppRoutes.supportScreen, page: () => SupportScreen()),
     GetPage(name: AppRoutes.termAndConditionScreen, page: () => TermAndCondition()),
     GetPage(name: AppRoutes.privacyPolicyScreen, page: () => PrivacyPolicy()),
+    GetPage(name: AppRoutes.redeemScreen, page: () => RedeemCodeScreen()),
   ];
 }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:earnly/app/controllers/earn_controller.dart';
+import 'package:earnly/app/controllers/invite_controller.dart';
 import 'package:earnly/app/controllers/storage_controller.dart';
 import 'package:earnly/app/controllers/user_controller.dart';
 import 'package:earnly/app/data/services/auth_service.dart';
@@ -119,7 +121,8 @@ class AuthController extends GetxController {
         return;
       }
 
-      Get.toNamed(AppRoutes.homeScreen);
+      await Get.find<InviteController>().getMyInviteCode();
+      Get.toNamed(AppRoutes.redeemScreen);
     } catch (e) {
       debugPrint(e.toString());
     } finally {
@@ -219,6 +222,9 @@ class AuthController extends GetxController {
 
   Future<void> logout() async {
     try {
+      Get.find<EarnController>().clean();
+      Get.find<InviteController>().clean();
+      Get.find<UserController>().clean();
       final storageController = Get.find<StorageController>();
       final token = await storageController.getToken();
       if (token == null) return;

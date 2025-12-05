@@ -125,7 +125,7 @@ class OtpScreen extends StatelessWidget {
                       whatNext: whatNext,
                     );
                   },
-                  isLoading: authController.isloading,
+                  isLoading: authController.isOtpVerifyLoading,
                   child: Text(
                     "Continue",
                     style: GoogleFonts.poppins(

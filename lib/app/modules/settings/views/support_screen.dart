@@ -22,6 +22,7 @@ class SupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       appBar: _buildAppBar(),
       body: SafeArea(
         child: Padding(
@@ -29,22 +30,44 @@ class SupportScreen extends StatelessWidget {
           child: ListView(
             children: [
               SizedBox(height: Get.height * 0.02),
-              Text("Topic", style: Get.textTheme.bodyMedium),
+              Text(
+                "Topic",
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
               const SizedBox(height: 5),
               CustomTextField(
                 hintText: "Enter topic name",
                 controller: subjectController,
-                // controller: controller.emailController,
+                textStyle: GoogleFonts.poppins(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(height: 25),
-              Text("Message", style: Get.textTheme.bodyMedium),
+              Text(
+                "Message",
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
               const SizedBox(height: 5),
               CustomTextField(
                 hintText: "Enter your message",
                 minLines: 5,
                 maxLines: 6,
                 controller: messageController,
-                // controller: controller.emailController,
+                textStyle: GoogleFonts.poppins(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(height: 20),
               InkWell(
@@ -70,23 +93,28 @@ class SupportScreen extends StatelessWidget {
                         size: 40,
                       ),
                       const SizedBox(width: 20),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Browse images or drop here",
-                            style: Get.textTheme.bodyMedium!.copyWith(
-                              fontWeight: FontWeight.w700,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Browse images or drop here",
+                              style: GoogleFonts.poppins(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          Text(
-                            "JPG, PNG , file size no more than 25MB",
-                            style: Get.textTheme.bodyMedium!.copyWith(
-                              color: Colors.grey,
-                              fontSize: 10,
+                            Text(
+                              "JPG, PNG , file size no more than 25MB",
+                              style: GoogleFonts.poppins(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -201,7 +229,8 @@ class SupportScreen extends StatelessWidget {
 
   AppBar _buildAppBar() {
     return AppBar(
-      backgroundColor: Color(0xFFFFE7E6),
+      backgroundColor: AppColors.backgroundColor,
+      foregroundColor: Colors.white,
       centerTitle: true,
       elevation: 0,
       title: Text(
@@ -209,7 +238,6 @@ class SupportScreen extends StatelessWidget {
         style: GoogleFonts.montserrat(
           fontSize: 18,
           fontWeight: FontWeight.w600,
-          color: AppColors.primaryColor,
         ),
       ),
       leading: Padding(
