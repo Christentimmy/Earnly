@@ -186,6 +186,37 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      final token = await storageController.getToken();
+      if (token == null) return;
+
+      final response = await authService.changePassword(
+        token: token,
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+      );
+      if (response == null) return;
+
+      final decoded = json.decode(response.body);
+      String message = decoded["message"];
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      Get.offAllNamed(AppRoutes.loginScreen);
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
   Future<void> logout() async {
     try {
       final storageController = Get.find<StorageController>();

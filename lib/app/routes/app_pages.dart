@@ -2,6 +2,7 @@ import 'package:earnly/app/data/models/notik_task_model.dart';
 import 'package:earnly/app/modules/ads/views/notik_task_details_screen.dart';
 import 'package:earnly/app/modules/ads/views/notik_task_screen.dart';
 import 'package:earnly/app/modules/ads/views/watch_ads_screen.dart';
+import 'package:earnly/app/modules/auth/views/change_password_screen.dart';
 import 'package:earnly/app/modules/auth/views/otp_screen.dart';
 import 'package:earnly/app/modules/auth/views/forget_password_screen.dart';
 import 'package:earnly/app/modules/auth/views/login_screen.dart';
@@ -95,5 +96,7 @@ class AppPages {
       return NotikTaskDetailScreen(taskModel: task);
     }),
     GetPage(name: AppRoutes.inviteScreen, page: () => InviteStatsScreen()),
+    GetPage(name: AppRoutes.changePassword, page: () => ChangePasswordScreen()),
+    // GetPage(name: AppRoutes.supportScreen, page: () => SupportScreen()),
   ];
 }

@@ -148,6 +148,36 @@ class AuthService {
     return null;
   }
 
+  Future<http.Response?> changePassword({
+    required String token,
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/auth/change-password'),
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer $token",
+            },
+            body: jsonEncode({
+              "oldPassword": oldPassword,
+              "newPassword": newPassword,
+            }),
+          )
+          .timeout(const Duration(seconds: 30));
+      return response;
+    } on SocketException {
+      CustomSnackbar.showErrorToast("No internet connection");
+    } on TimeoutException {
+      CustomSnackbar.showErrorToast("Request timeout, please try again");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
   Future<http.Response?> logout({required String token}) async {
     try {
       final response = await http

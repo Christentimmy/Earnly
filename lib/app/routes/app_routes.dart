@@ -23,4 +23,6 @@ class AppRoutes {
   static const String notikTaskScreen = "/notik-task-screen";
   static const String notikTaskDetailsScreen = "/notik-task-details-screen";
   static const String inviteScreen = "/invite-screen";
+  static const String changePassword= "/change-password-screen";
+  static const String supportScreen = "/support-screen";
 }

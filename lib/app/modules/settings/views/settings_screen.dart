@@ -4,11 +4,7 @@ import 'package:earnly/app/resources/colors.dart';
 import 'package:earnly/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../screens/account_settings_screen.dart';
-import '../../../../screens/notification_screen.dart';
-import '../../../../screens/security_screen.dart';
-import '../../../../screens/invite_friend_screen.dart';
-import '../../../../screens/about_app_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SettingsScreen extends StatelessWidget {
   SettingsScreen({super.key});
@@ -107,14 +103,7 @@ class SettingsScreen extends StatelessWidget {
                     vertical: 10,
                   ),
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AccountSettingsScreen(),
-                    ),
-                  );
-                },
+                onPressed: () {},
                 child: const Text(
                   "Edit profile",
                   style: TextStyle(color: Colors.white),
@@ -129,7 +118,7 @@ class SettingsScreen extends StatelessWidget {
                 child: Text(
                   "Settings",
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                   ),
@@ -139,64 +128,30 @@ class SettingsScreen extends StatelessWidget {
 
               _buildSettingsItem(
                 context,
-                title: "Account",
-                subtitle: "Limits, Currency, Airdrops and more",
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AccountSettingsScreen(),
-                    ),
-                  );
-                },
-              ),
-              _buildSettingsItem(
-                context,
-                title: "Notifications",
-                subtitle: "Emails and push alerts",
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const NotificationScreen(),
-                    ),
-                  );
-                },
-              ),
-              _buildSettingsItem(
-                context,
-                title: "Security",
-                subtitle: "Login methods, Backup Phrases and more",
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const SecurityScreen()),
-                  );
-                },
+                title: "Change Password",
+                onTap: ()=> Get.toNamed(AppRoutes.changePassword),
               ),
               _buildSettingsItem(
                 context,
                 title: "Invite friends",
                 subtitle: "Refer your friends for more bonuses",
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const InviteFriendScreen(),
-                    ),
-                  );
-                },
+                onTap: () => Get.toNamed(AppRoutes.inviteScreen),
               ),
               _buildSettingsItem(
                 context,
-                title: "About app",
-                subtitle: "Support, Policies and more",
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const AboutAppScreen()),
-                  );
-                },
+                title: "Support",
+                onTap: () => Get.toNamed(AppRoutes.inviteScreen),
+              ),
+
+              _buildSettingsItem(
+                context,
+                title: "Terms & Conditions",
+                onTap: () {},
+              ),
+              _buildSettingsItem(
+                context,
+                title: "Privacy Policy",
+                onTap: () {},
               ),
 
               const SizedBox(height: 30),
@@ -240,25 +195,29 @@ class SettingsScreen extends StatelessWidget {
   Widget _buildSettingsItem(
     BuildContext context, {
     required String title,
-    required String subtitle,
+    String? subtitle,
     required VoidCallback onTap,
   }) {
     return Column(
       children: [
         ListTile(
           contentPadding: EdgeInsets.zero,
+          minTileHeight: 47,
           title: Text(
             title,
-            style: const TextStyle(
+            style: GoogleFonts.poppins(
               color: Colors.white,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
               fontSize: 16,
             ),
           ),
-          subtitle: Text(
-            subtitle,
-            style: const TextStyle(color: Colors.white70, fontSize: 13),
-          ),
+          subtitle:
+              subtitle != null
+                  ? Text(
+                    subtitle,
+                    style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  )
+                  : null,
           trailing: const Icon(
             Icons.arrow_forward_ios,
             color: Colors.white,
