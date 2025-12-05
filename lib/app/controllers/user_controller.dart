@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:earnly/app/controllers/storage_controller.dart';
 import 'package:earnly/app/data/models/user_model.dart';
 import 'package:earnly/app/data/models/withdraw_model.dart';
 import 'package:earnly/app/data/services/user_service.dart';
 import 'package:earnly/app/resources/colors.dart';
+import 'package:earnly/app/routes/app_routes.dart';
 import 'package:earnly/app/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -194,6 +196,41 @@ class UserController extends GetxController {
         withdrawHistory.value = raw;
       }
       hasNextPage.value = decoded["hasNextPage"] as bool;
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
+  Future<void> createTicket({
+    required List<File> attachments,
+    required String subject,
+    required String description,
+  }) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      final token = await storageController.getToken();
+      if (token == null) return;
+
+      final response = await userService.createTicket(
+        token: token,
+        attachments: attachments,
+        subject: subject,
+        description: description,
+      );
+
+      if (response == null) return;
+      final decoded = await json.decode(response.body);
+
+      String message = decoded["message"] ?? "";
+      if (response.statusCode != 201) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      CustomSnackbar.showSuccessToast(message);
+      Get.offAllNamed(AppRoutes.bottomNavigationScreen);
     } catch (e) {
       debugPrint(e.toString());
     } finally {

@@ -140,7 +140,7 @@ class SettingsScreen extends StatelessWidget {
               _buildSettingsItem(
                 context,
                 title: "Support",
-                onTap: () => Get.toNamed(AppRoutes.inviteScreen),
+                onTap: () => Get.toNamed(AppRoutes.supportScreen),
               ),
 
               _buildSettingsItem(

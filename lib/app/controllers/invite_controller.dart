@@ -94,4 +94,5 @@ class InviteController extends GetxController {
       isloading.value = false;
     }
   }
+
 }

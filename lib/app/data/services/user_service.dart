@@ -87,4 +87,35 @@ class UserService {
     }
     return null;
   }
+
+  Future<http.Response?> createTicket({
+    required String token,
+    required List<File> attachments,
+    required String subject,
+    required String description,
+  }) async {
+    try {
+      final url = Uri.parse("$baseUrl/support-ticket/create-ticket");
+      final requests = http.MultipartRequest("POST", url)
+        ..headers['Authorization'] = 'Bearer $token';
+      final files = await Future.wait(
+        attachments
+            .map((e) => http.MultipartFile.fromPath('attachments', e.path))
+            .toList(),
+      );
+      requests.files.addAll(files);
+      requests.fields['subject'] = subject;
+      requests.fields['description'] = description;
+      final response = await requests.send().timeout(
+        const Duration(seconds: 60),
+      );
+      return await http.Response.fromStream(response);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+
+
 }

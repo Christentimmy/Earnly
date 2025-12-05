@@ -16,6 +16,7 @@ import 'package:earnly/app/modules/onboarding/views/onboarding_screen_1.dart';
 import 'package:earnly/app/modules/onboarding/views/onboarding_screen_2.dart';
 import 'package:earnly/app/modules/onboarding/views/welcome_screen.dart';
 import 'package:earnly/app/modules/settings/views/invite_screen.dart';
+import 'package:earnly/app/modules/settings/views/support_screen.dart';
 import 'package:earnly/app/modules/splash/views/splash_screen.dart';
 import 'package:earnly/app/modules/wallet/views/history_screen.dart';
 import 'package:earnly/app/modules/wallet/views/wallet_screen.dart';
@@ -97,6 +98,6 @@ class AppPages {
     }),
     GetPage(name: AppRoutes.inviteScreen, page: () => InviteStatsScreen()),
     GetPage(name: AppRoutes.changePassword, page: () => ChangePasswordScreen()),
-    // GetPage(name: AppRoutes.supportScreen, page: () => SupportScreen()),
+    GetPage(name: AppRoutes.supportScreen, page: () => SupportScreen()),
   ];
 }

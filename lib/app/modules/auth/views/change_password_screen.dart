@@ -38,7 +38,7 @@ class ChangePasswordScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  "Reset Password",
+                  "Change Password",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 33,
@@ -48,6 +48,7 @@ class ChangePasswordScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 50),
                 Form(
+                  key: formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
